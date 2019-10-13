@@ -1,23 +1,97 @@
 <%
 from pygments.formatters import HtmlFormatter
 formatter = HtmlFormatter(linenos=True)
+is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki.html", {"slug": "index"})
+title = registry.find({"type": "wiki", "slug": "index"})["title"]
 %>
 <!doctype html>
 <html>
 <head>
-<title><%block name="title" /></title>
+<title>
+% if not is_home:
+${self.title()} -
+% endif
+${title}</title>
 <style type="text/css">
 ${formatter.get_style_defs()}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://cdn.jsdelivr.net/gh/google/material-design-icons/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: url(https://cdn.jsdelivr.net/gh/google/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+       url(https://cdn.jsdelivr.net/gh/google/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
+       url(https://cdn.jsdelivr.net/gh/google/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
 </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
 </head>
 <body>
-<header>
+
+<div class="navbar-fixed">
 <nav>
-<a href="/">首页</a>
+<div class="container nav-wrapper">
+<a class="brand-logo" href="${urls.build('wiki.html', {'slug': 'index'})}"><i class="material-icons">school</i> ${title}</a>
+
+<form class="right">
+  <div class="input-field">
+    <input id="search" type="search" required>
+    <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+    <i class="material-icons">close</i>
+  </div>
+</form>
+
+</div>
 </nav>
-</header>
+</div>
+
+<main class="container">
+% if not is_home:
+<h1><%block name="title" /></h1>
+% endif
 ${self.body()}
+</main>
+
+<footer class="page-footer">
+<div class="container">
+<%block name="footer" />
+</div>
+<div class="footer-copyright">
+  <div class="container">
+    &copy; 2016-2019 OI Wiki Team
+  </div>
+</div>
+</footer>
+
 </body>
 </html>

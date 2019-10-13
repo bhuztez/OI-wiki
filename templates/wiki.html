@@ -2,8 +2,56 @@
 
 <%block name="title">${entry["title"]}</%block>
 
-<main>
-<h1>${entry["title"]}</h1>
+<%block name="footer">
+<div class="row">
+<div class="col l5">
+本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</div>
+<%
+authors = [
+  author
+  for author in registry.find_all({"type": "author"})
+  if any(email in entry["authors"] for email in author.get("emails", []))]
+author_emails = [email for author in authors for email in author["emails"]]
+%>
+
+% if entry["authors"]:
+<div class="col l3">
+<h5>本页面贡献者</h5>
+<ul>
+%   for author in authors:
+<li><a class="grey-text text-lighten-3" href="${urls.build('author.html', {'slug': author['slug']})}">${author["name"]}</a></li>
+%   endfor
+%   for author in entry["authors"]:
+%     if author not in author_emails:
+<li>${author}</li>
+<% warn("%s: author %r not found" % (filename, author)) %>
+%     endif
+%   endfor
+</ul>
+</div>
+% endif
+
+<%
+pages = [
+  page
+  for page in registry.find_all({"type": "wiki"})
+  if entry["slug"] in page.get("tags", [])]
+%>
+
+<div class="col l3">
+<h5>链接</h5>
+<ul>
+<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/commits/master/${filename}">更新历史</a></li>
+<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/blob/master/${filename}">在 GitHub 上编辑此页！</a></li>
+% if pages:
+<li><a class="grey-text text-lighten-3" href="${urls.build('tagged.html', {'slug': entry['slug']})}">pages tagged with "${entry["title"]}"</a></li>
+% endif
+</ul>
+</div>
+
+</div>
+</%block>
 
 % if entry.get("canonical", None) is not None:
 <%     canonical = registry.find({"type": "wiki", "slug": entry["canonical"]}) %>
@@ -29,25 +77,6 @@ canonicals = [
 ${content | n}
 </article>
 
-</main>
-
-<footer>
-<%
-pages = [
-  page
-  for page in registry.find_all({"type": "wiki"})
-  if entry["slug"] in page.get("tags", [])]
-%>
-% if pages:
-<hr/>
-<h4>Pages tagged with "${entry["title"]}"</h4>
-<ul>
-%   for page in pages:
-<li><a href="${urls.build('wiki.html', {'slug': page['slug']})}">${page["title"]}</a></li>
-%   endfor
-</ul>
-% endif
-
 <%
 tags = [
   tag
@@ -57,40 +86,15 @@ tag_slugs = [tag["slug"] for tag in tags]
 %>
 
 % if entry["tags"]:
-<hr />
 <p>
 %   for tag in tags:
-<span><a href="${urls.build('wiki.html', {'slug': tag['slug']})}">${tag["title"]}</a></span>
+<a class="btn" href="${urls.build('wiki.html', {'slug': tag['slug']})}">${tag["title"]}</a>
 %   endfor
 %   for tag in entry["tags"]:
 %     if tag not in tag_slugs:
-<span>${tag}</span>
+<span class="btn">${tag}</span>
 <% warn("%s: tag %r not found" % (filename, tag)) %>
 %     endif
 %   endfor
 </p>
 % endif
-
-<%
-authors = [
-  author
-  for author in registry.find_all({"type": "author"})
-  if any(email in entry["authors"] for email in author.get("emails", []))]
-author_emails = [email for author in authors for email in author["emails"]]
-%>
-
-% if entry["authors"]:
-<hr />
-<p>By
-%   for author in authors:
-<span><a href="${urls.build('author.html', {'slug': author['slug']})}">${author["name"]}</a></span>
-%   endfor
-%   for author in entry["authors"]:
-%     if author not in author_emails:
-<span>${author}</span>
-<% warn("%s: author %r not found" % (filename, author)) %>
-%     endif
-%   endfor
-% endif
-
-</footer>

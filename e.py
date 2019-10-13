@@ -15,8 +15,8 @@ if __name__ == '__main__':
 import os
 
 TEMPLATE_DIRS = ['templates']
-STATICFILES_DIRS = {'/static': 'static', '/': 'wiki'}
-STATICFILES_EXCLUDE = ["*~", ".*"]
+STATICFILES_DIRS = {'/static': 'static', '': 'wiki'}
+STATICFILES_EXCLUDE = ["*~", ".*", "*.md"]
 
 def author(filename, meta):
     slug = filename[8:-3]
@@ -58,7 +58,6 @@ SOURCE_FILES = [
     ("probs/**/*.md", 'markdown', prob)
 ]
 
-
 URLS = Map([
     Rule(
         '/',
@@ -68,11 +67,15 @@ URLS = Map([
         '/authors/',
         endpoint='authors.html'),
     Rule(
-        '/authors/<slug>',
+        '/authors/<slug>.html',
         defaults={'type': 'author'},
         endpoint='author.html'),
     Rule(
-        '/<path:slug>',
+        '/tagged/<path:slug>.html',
+        defaults={'type': 'wiki'},
+        endpoint='tagged.html'),
+    Rule(
+        '/<path:slug>.html',
         defaults={'type': 'wiki'},
         endpoint='wiki.html')])
 

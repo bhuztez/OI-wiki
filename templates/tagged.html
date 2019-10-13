@@ -1,0 +1,20 @@
+<%inherit file="base.html"/>
+
+<%block name="title">Tagged: ${entry["title"]}</%block>
+
+<p>回到"<a href="${urls.build('wiki.html', {'slug': entry['slug']})}">${entry["title"]}</a>"</p>
+
+<%
+pages = [
+  page
+  for page in registry.find_all({"type": "wiki"})
+  if entry["slug"] in page.get("tags", [])]
+%>
+% if pages:
+<ul>
+%   for page in pages:
+<li><a href="${urls.build('wiki.html', {'slug': page['slug']})}">${page["title"]}</a></li>
+%   endfor
+</ul>
+% endif
+

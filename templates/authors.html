@@ -1,17 +1,13 @@
 <%inherit file="base.html"/>
+
+<%block name="title">Authors</%block>
+
 <%
-authors = db.execute(
-'''
-SELECT metadata AS "[JSON]"
-FROM source AS author
-WHERE json_extract(author.metadata, '$.type') = 'author'
-''').fetchall()
+authors = registry.find_all({"type": "author"})
 %>
 
-<h1>Authors</h1>
-
 <ul>
-% for author, in authors:
+% for author in authors:
 <li><a href="${urls.build('author.html', {'slug': author['slug']})}">${author["name"]}</a></li>
 % endfor
 </ul>
