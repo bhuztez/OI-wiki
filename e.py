@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
 import os
 
-TEMPLATE_DIRS = ['templates']
 STATICFILES_DIRS = {'/static': 'static', '': 'wiki'}
 STATICFILES_EXCLUDE = ["*~", ".*", "*.md"]
 
@@ -58,42 +57,51 @@ SOURCE_FILES = [
     ("probs/**/*.md", 'markdown', prob)
 ]
 
-URLS = Map([
+URLS = [
     Rule(
         '/',
         defaults={'type': 'wiki', 'slug': 'index'},
-        endpoint='wiki.html'),
+        endpoint='wiki'),
     Rule(
         '/authors/',
-        endpoint='authors.html'),
+        defaults={'type': 'author'},
+        endpoint='author_list'),
     Rule(
         '/authors/<slug>.html',
         defaults={'type': 'author'},
-        endpoint='author.html'),
+        endpoint='author'),
     Rule(
         '/tagged/<path:slug>.html',
         defaults={'type': 'wiki'},
-        endpoint='tagged.html'),
+        endpoint='tagged'),
     Rule(
         '/<path:slug>.html',
         defaults={'type': 'wiki'},
-        endpoint='wiki.html')])
+        endpoint='wiki')]
+
+class views(config):
+    wiki = WheezyView('templates/wiki.html')
+    author_list = WheezyView('templates/authors.html')
+    author = WheezyView('templates/author.html')
+    tagged = WheezyView('templates/tagged.html')
 
 
 def build_link(target, text=None):
-    urls = URLS.bind("localhost", "/")
-
     if target.startswith("@"):
-        url = urls.build('author.html', {'slug': target[1:]})
+        url = urls.build('author', {'slug': target[1:]})
     else:
-        url = urls.build('wiki.html', {'slug': target})
+        url = urls.build('wiki', {'slug': target})
 
     _, values = urls.match(url)
-    entry = registry.find(values)
-    if entry is None:
+    entries = registry.select(values)
+    entry = None
+
+    if not entries:
         warn("%s %r not found" % (
             "author" if target.startswith("@") else "wiki",
             target))
+    else:
+        entry = entries[0]
 
     if text is None:
         if entry is None:
@@ -112,6 +120,7 @@ def build_link(target, text=None):
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
 from markdown.util import etree
+from markdown.extensions.toc import TocExtension
 
 class WikiLinkExtension(Extension):
 
@@ -135,19 +144,18 @@ class WikiLinks(Pattern):
         a.set('href', url)
         return a
 
-
-
-READERS = {
-    'markdown': {
-        'extensions':
+class readers(config):
+    markdown = MarkdownReader(
+        extensions=
         [ 'codehilite',
           'meta',
+          TocExtension(),
           WikiLinkExtension(),
           'tables',
           'pymdownx.arithmatex',
           'pymdownx.superfences',
         ],
-        'extension_configs': {
+        extension_configs= {
             'codehilite': {
                 'guess_lang': False,
                 'linenums': True,
@@ -156,9 +164,8 @@ READERS = {
                 'generic': True,
             }
         }
-    }
-}
+    )
 
-REGISTRIES = {
-  'default': { 'name': 'dummy' }
-}
+
+class registries(config):
+    default = DummyRegistry()

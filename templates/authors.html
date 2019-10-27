@@ -1,13 +1,21 @@
-<%inherit file="base.html"/>
+%extends("templates/base.html")
 
-<%block name="title">Authors</%block>
+%def title():
+Authors
+%end
 
-<%
-authors = registry.find_all({"type": "author"})
-%>
+%def content():
+<div class="md-content">
+<div class="md-content__inner">
+<article class="md-typeset">
+<h1>%title()</h1>
 
 <ul>
-% for author in authors:
-<li><a href="${urls.build('author.html', {'slug': author['slug']})}">${author["name"]}</a></li>
-% endfor
+%for author in entries:
+<li><a href="%urls.build('author', {'slug': author['slug']})">%author["name"]</a></li>
+%endfor
 </ul>
+</article>
+</div>
+</div>
+%end

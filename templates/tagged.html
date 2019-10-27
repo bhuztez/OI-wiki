@@ -1,20 +1,38 @@
-<%inherit file="base.html"/>
+%extends("templates/base.html")
 
-<%block name="title">Tagged: ${entry["title"]}</%block>
+%(
+from werkzeug.routing import NotFound
+if not entries:
+    raise NotFound()
+entry = entries[0]
+)
 
-<p>回到"<a href="${urls.build('wiki.html', {'slug': entry['slug']})}">${entry["title"]}</a>"</p>
+%def title():
+Tagged: %entry["title"]
+%end
 
-<%
+%def content():
+<div class="md-content">
+<div class="md-content__inner">
+<article class="md-typeset">
+<h1>%title()</h1>
+
+<p>回到"<a href="%urls.build('wiki', {'slug': entry['slug']})">%entry["title"]</a>"</p>
+%(
 pages = [
   page
-  for page in registry.find_all({"type": "wiki"})
+  for page in registry.select({"type": "wiki"})
   if entry["slug"] in page.get("tags", [])]
-%>
-% if pages:
+)
+%if pages:
 <ul>
-%   for page in pages:
-<li><a href="${urls.build('wiki.html', {'slug': page['slug']})}">${page["title"]}</a></li>
-%   endfor
+%for page in pages:
+<li><a href="%urls.build('wiki', {'slug': page['slug']})">%page["title"]</a></li>
+%end
 </ul>
-% endif
+%end
 
+</article>
+</div>
+</div>
+%end

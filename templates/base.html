@@ -1,20 +1,18 @@
-<%
-from pygments.formatters import HtmlFormatter
-formatter = HtmlFormatter(linenos=True)
-is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki.html", {"slug": "index"})
-title = registry.find({"type": "wiki", "slug": "index"})["title"]
-%>
+%(
+is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"slug": "index"})
+site_title = registry.select({"type": "wiki", "slug": "index"})[0]["title"]
+)
 <!doctype html>
 <html>
 <head>
 <title>
-% if not is_home:
-${self.title()} -
-% endif
-${title}</title>
+%def title():
+%end
+%if not is_home:
+%title() -
+%end
+%site_title</title>
 <style type="text/css">
-${formatter.get_style_defs()}
-
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -50,9 +48,11 @@ ${formatter.get_style_defs()}
   font-feature-settings: 'liga';
 }
 </style>
+
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<link rel="stylesheet" href="https://facelessuser.github.io/pymdown-extensions/assets/stylesheets/application.30686662.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 </head>
@@ -61,7 +61,7 @@ ${formatter.get_style_defs()}
 <div class="navbar-fixed">
 <nav>
 <div class="container nav-wrapper">
-<a class="brand-logo" href="${urls.build('wiki.html', {'slug': 'index'})}"><i class="material-icons">school</i> ${title}</a>
+<a class="brand-logo" href="%urls.build('wiki', {'slug': 'index'})"><i class="material-icons">school</i> %site_title</a>
 
 <form class="right">
   <div class="input-field">
@@ -76,16 +76,18 @@ ${formatter.get_style_defs()}
 </div>
 
 <main class="container">
-% if not is_home:
-<h1><%block name="title" /></h1>
-% endif
-${self.body()}
+%def content():
+%end
+%content()
 </main>
 
 <footer class="page-footer">
+%def footer():
+%end
 <div class="container">
-<%block name="footer" />
+%footer()
 </div>
+
 <div class="footer-copyright">
   <div class="container">
     &copy; 2016-2019 OI Wiki Team

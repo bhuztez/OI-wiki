@@ -1,100 +1,132 @@
-<%inherit file="base.html"/>
+%extends("templates/base.html")
 
-<%block name="title">${entry["title"]}</%block>
+%(
+from werkzeug.routing import NotFound
+if not entries:
+    raise NotFound()
+entry = entries[0]
+is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"slug": "index"})
+)
 
-<%block name="footer">
+%def title():
+%entry["title"]
+%end
+
+%def footer():
 <div class="row">
 <div class="col l5">
 本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
 </div>
-<%
+%(
 authors = [
   author
-  for author in registry.find_all({"type": "author"})
+  for author in registry.select({"type": "author"})
   if any(email in entry["authors"] for email in author.get("emails", []))]
 author_emails = [email for author in authors for email in author["emails"]]
-%>
+)
 
-% if entry["authors"]:
+%if entry["authors"]:
 <div class="col l3">
 <h5>本页面贡献者</h5>
 <ul>
-%   for author in authors:
-<li><a class="grey-text text-lighten-3" href="${urls.build('author.html', {'slug': author['slug']})}">${author["name"]}</a></li>
-%   endfor
-%   for author in entry["authors"]:
-%     if author not in author_emails:
-<li>${author}</li>
-<% warn("%s: author %r not found" % (filename, author)) %>
-%     endif
-%   endfor
+%for author in authors:
+<li><a class="grey-text text-lighten-3" href="%urls.build('author', {'slug': author['slug']})">%author["name"]</a></li>
+%end
+%for author in entry["authors"]:
+%if author not in author_emails:
+<li>%author</li>
+%( warn(f"{entry.filename}: author {author!r} not found") )
+%end
+%end
 </ul>
 </div>
-% endif
-
-<%
-pages = [
-  page
-  for page in registry.find_all({"type": "wiki"})
-  if entry["slug"] in page.get("tags", [])]
-%>
+%end
 
 <div class="col l3">
 <h5>链接</h5>
 <ul>
-<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/commits/master/${filename}">更新历史</a></li>
-<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/blob/master/${filename}">在 GitHub 上编辑此页！</a></li>
-% if pages:
-<li><a class="grey-text text-lighten-3" href="${urls.build('tagged.html', {'slug': entry['slug']})}">pages tagged with "${entry["title"]}"</a></li>
-% endif
+<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/commits/master/%entry.filename">更新历史</a></li>
+<li><a class="grey-text text-lighten-3" href="https://github.com/OI-wiki/OI-wiki/blob/master/%entry.filename">在 GitHub 上编辑此页！</a></li>
 </ul>
 </div>
 
 </div>
-</%block>
+%end
 
-% if entry.get("canonical", None) is not None:
-<%     canonical = registry.find({"type": "wiki", "slug": entry["canonical"]}) %>
+
+%def content():
+<div class="md-content">
+<div class="md-content__inner">
+<article class="md-typeset">
+%if not is_home:
+<h1>%title()</h1>
+%end
+
+%if entry.get("canonical", None) is not None:
+%( canonical = registry.select({"type": "wiki", "slug": entry["canonical"]})[0] )
 <h4>Source:</h4>
-<a href="${urls.build('wiki.html', {'slug': canonical['slug']})}">${canonical["title"]}</a>
-% endif
+<a href="%urls.build('wiki', {'slug': canonical['slug']})">%canonical["title"]</a>
+%end
 
-<%
+%(
 canonicals = [
   canonical
-  for canonical in registry.find_all({"canonical": entry["slug"]})]
-%>
-% if canonicals:
+  for canonical in registry.select({"type": "wiki", "canonical": entry["slug"]})]
+)
+
+%if canonicals:
 <h4>Canonicals</h4>
 <ul>
-%   for canonical in canonicals:
-<a href="${urls.build('wiki.html', {'slug': canonical['slug']})}">${canonical["title"]}</a>
-%   endfor
+%for canonical in canonicals:
+<a href="%urls.build('wiki', {'slug': canonical['slug']})">%canonical["title"]</a>
+%end
 </ul>
-% endif
+%end
 
-<article>
-${content | n}
+%read(entry).html()
 </article>
 
-<%
+%(
+pages = [
+  page
+  for page in registry.select({"type": "wiki"})
+  if entry["slug"] in page.get("tags", [])]
+)
+
+%(
 tags = [
   tag
-  for tag in registry.find_all({"type": "wiki"})
+  for tag in registry.select({"type": "wiki"})
   if tag.get("slug", None) in entry["tags"]]
 tag_slugs = [tag["slug"] for tag in tags]
-%>
+)
 
-% if entry["tags"]:
 <p>
-%   for tag in tags:
-<a class="btn" href="${urls.build('wiki.html', {'slug': tag['slug']})}">${tag["title"]}</a>
-%   endfor
-%   for tag in entry["tags"]:
-%     if tag not in tag_slugs:
-<span class="btn">${tag}</span>
-<% warn("%s: tag %r not found" % (filename, tag)) %>
-%     endif
-%   endfor
+%if pages:
+<a class="btn" href="%urls.build('tagged', {'slug': entry['slug']})">%entry["title"]</a>
+%end
+%for tag in tags:
+<a class="btn" href="%urls.build('tagged', {'slug': tag['slug']})">%tag["title"]</a>
+%end
+%for tag in entry["tags"]:
+%if tag not in tag_slugs:
+<span class="btn">%tag</span>
+%( warn(f"{entry.filename}: tag {tag!r} not found") )
+%end
+%end
 </p>
-% endif
+</div>
+</div>
+
+<div class="md-sidebar md-sidebar--secondary" data-md-state="lock">
+<div class="md-nav">
+<span class="md-nav__title">Table of contents</span>
+<ul class="md-nav__list">
+%for token in read(entry).toc():
+<li class="md-nav__item"><a class="md-nav__link" href="#%token["id"]">%token["name"]</a></li>
+%end
+</ul>
+</div>
+</div>
+
+%end
