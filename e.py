@@ -93,7 +93,7 @@ def build_link(target, text=None):
         url = urls.build('wiki', {'slug': target})
 
     _, values = urls.match(url)
-    entries = registry.select(values)
+    entries = db.select(values)
     entry = None
 
     if not entries:
@@ -163,9 +163,6 @@ class readers(config):
             'pymdownx.arithmatex': {
                 'generic': True,
             }
-        }
+        },
+        attrs = ('toc_tokens',)
     )
-
-
-class registries(config):
-    default = DummyRegistry()

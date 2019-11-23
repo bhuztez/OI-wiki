@@ -20,7 +20,7 @@ entry = entries[0]
 %(
 wikis = [
   wiki
-  for wiki in registry.select({"type": "wiki"})
+  for wiki in db.select({"type": "wiki"})
   if any(author in entry["emails"] for author in wiki.get("authors", [])) ]
 )
 
@@ -31,7 +31,7 @@ wikis = [
 <li><a href="%urls.build('wiki', {'slug': wiki['slug']})">%wiki["title"]</a></li>
 %end
 </ul>
-%read(entry).html()
+%entry.content
 
 </article>
 </div>

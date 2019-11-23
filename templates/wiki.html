@@ -20,7 +20,7 @@ is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"sl
 %(
 authors = [
   author
-  for author in registry.select({"type": "author"})
+  for author in db.select({"type": "author"})
   if any(email in entry["authors"] for email in author.get("emails", []))]
 author_emails = [email for author in authors for email in author["emails"]]
 )
@@ -63,7 +63,7 @@ author_emails = [email for author in authors for email in author["emails"]]
 %end
 
 %if entry.get("canonical", None) is not None:
-%( canonical = registry.select({"type": "wiki", "slug": entry["canonical"]})[0] )
+%( canonical = db.select({"type": "wiki", "slug": entry["canonical"]})[0] )
 <h4>Source:</h4>
 <a href="%urls.build('wiki', {'slug': canonical['slug']})">%canonical["title"]</a>
 %end
@@ -71,7 +71,7 @@ author_emails = [email for author in authors for email in author["emails"]]
 %(
 canonicals = [
   canonical
-  for canonical in registry.select({"type": "wiki", "canonical": entry["slug"]})]
+  for canonical in db.select({"type": "wiki", "canonical": entry["slug"]})]
 )
 
 %if canonicals:
@@ -83,20 +83,20 @@ canonicals = [
 </ul>
 %end
 
-%read(entry).html()
+%entry.content
 </article>
 
 %(
 pages = [
   page
-  for page in registry.select({"type": "wiki"})
+  for page in db.select({"type": "wiki"})
   if entry["slug"] in page.get("tags", [])]
 )
 
 %(
 tags = [
   tag
-  for tag in registry.select({"type": "wiki"})
+  for tag in db.select({"type": "wiki"})
   if tag.get("slug", None) in entry["tags"]]
 tag_slugs = [tag["slug"] for tag in tags]
 )
@@ -122,7 +122,7 @@ tag_slugs = [tag["slug"] for tag in tags]
 <div class="md-nav">
 <span class="md-nav__title">Table of contents</span>
 <ul class="md-nav__list">
-%for token in read(entry).toc():
+%for token in entry.content.toc_tokens:
 <li class="md-nav__item"><a class="md-nav__link" href="#%token["id"]">%token["name"]</a></li>
 %end
 </ul>

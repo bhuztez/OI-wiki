@@ -21,7 +21,7 @@ Tagged: %entry["title"]
 %(
 pages = [
   page
-  for page in registry.select({"type": "wiki"})
+  for page in db.select({"type": "wiki"})
   if entry["slug"] in page.get("tags", [])]
 )
 %if pages:
