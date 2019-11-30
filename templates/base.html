@@ -1,6 +1,10 @@
 %(
-is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"slug": "index"})
-site_title = db.select({"type": "wiki", "slug": "index"})[0]["title"]
+is_home = urls.current_url() == urls.build("wiki", {"slug": "index"})
+site_title = db.get("""
+SELECT source.*
+FROM source
+WHERE json_extract(source.metadata, '$.type') = 'wiki'
+AND json_extract(source.metadata, '$.slug') = 'index'""")["title"]
 )
 <!doctype html>
 <html>

@@ -1,11 +1,5 @@
 %extends("templates/base.html")
-
-%(
-from werkzeug.routing import NotFound
-if not entries:
-    raise NotFound()
-entry = entries[0]
-)
+%require(entry)
 
 %def title():
 %entry["name"]
@@ -18,10 +12,14 @@ entry = entries[0]
 <h1>%title()</h1>
 
 %(
-wikis = [
-  wiki
-  for wiki in db.select({"type": "wiki"})
-  if any(author in entry["emails"] for author in wiki.get("authors", [])) ]
+wikis = db.select(
+'''
+SELECT wiki.*
+FROM source AS wiki, json_each(wiki.metadata, '$.authors')
+WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
+AND json_each.value IN (SELECT value FROM json_each({}))
+''',
+json.dumps(entry["emails"]))
 )
 
 

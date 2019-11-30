@@ -14,9 +14,6 @@ if __name__ == '__main__':
 
 import os
 
-STATICFILES_DIRS = {'/static': 'static', '': 'wiki'}
-STATICFILES_EXCLUDE = ["*~", ".*", "*.md"]
-
 def author(filename, meta):
     slug = filename[8:-3]
     return {
@@ -77,29 +74,45 @@ URLS = [
     Rule(
         '/<path:slug>.html',
         defaults={'type': 'wiki'},
-        endpoint='wiki')]
+        endpoint='wiki'),
+    Rule(
+        '/static/<path:path>',
+        endpoint='static'),
+    Rule(
+        '/<path:path>',
+        endpoint='media')
+]
 
 class views(config):
-    wiki = WheezyView('templates/wiki.html')
-    author_list = WheezyView('templates/authors.html')
-    author = WheezyView('templates/author.html')
-    tagged = WheezyView('templates/tagged.html')
+    wiki = EntryView(template_name='templates/wiki.html')
+    author_list = EntryListView(template_name='templates/authors.html')
+    author = EntryView(template_name='templates/author.html')
+    tagged = EntryView(template_name='templates/tagged.html')
+    static = StaticFileView('static', ("*~", ".*", "*.md"))
+    media = StaticFileView('wiki', ("*~", ".*", "*.md"))
 
 
 def build_link(target, text=None):
     if target.startswith("@"):
-        url = urls.build('author', {'slug': target[1:]})
+        type = 'author'
+        slug = target[1:]
     else:
-        url = urls.build('wiki', {'slug': target})
+        type = 'wiki'
+        slug = target
+    url = urls.build(type, {'slug': slug})
 
     _, values = urls.match(url)
-    entries = db.select(values)
+
+    entries = db.select('''
+SELECT source.*
+FROM source
+WHERE json_extract(source.metadata, '$.type') = {}
+AND json_extract(source.metadata, '$.slug') = {}
+''', type, slug)
     entry = None
 
     if not entries:
-        warn("%s %r not found" % (
-            "author" if target.startswith("@") else "wiki",
-            target))
+        warn(f"{type} {slug!r} not found")
     else:
         entry = entries[0]
 

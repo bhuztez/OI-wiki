@@ -1,11 +1,8 @@
 %extends("templates/base.html")
+%require(entry)
 
 %(
-from werkzeug.routing import NotFound
-if not entries:
-    raise NotFound()
-entry = entries[0]
-is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"slug": "index"})
+is_home = urls.current_url() == urls.build("wiki", {"slug": "index"})
 )
 
 %def title():
@@ -18,10 +15,14 @@ is_home = urls.dispatch(lambda e, v: urls.build(e,v)) == urls.build("wiki", {"sl
 本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
 </div>
 %(
-authors = [
-  author
-  for author in db.select({"type": "author"})
-  if any(email in entry["authors"] for email in author.get("emails", []))]
+authors = db.select(
+'''
+SELECT author.*
+FROM source AS author, json_each(author.metadata, '$.emails')
+WHERE json_extract(author.metadata, '$.type') = 'author'
+AND json_each.value IN (SELECT value FROM json_each({}))
+''',
+json.dumps(entry["authors"]))
 author_emails = [email for author in authors for email in author["emails"]]
 )
 
@@ -63,15 +64,25 @@ author_emails = [email for author in authors for email in author["emails"]]
 %end
 
 %if entry.get("canonical", None) is not None:
-%( canonical = db.select({"type": "wiki", "slug": entry["canonical"]})[0] )
+%(
+canonical = db.get("""
+SELECT wiki.*
+FROM source AS wiki
+WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
+AND json_extract(wiki.metadata, '$.slug') = {}
+""", entry["canonical"])
+)
 <h4>Source:</h4>
 <a href="%urls.build('wiki', {'slug': canonical['slug']})">%canonical["title"]</a>
 %end
 
 %(
-canonicals = [
-  canonical
-  for canonical in db.select({"type": "wiki", "canonical": entry["slug"]})]
+canonicals = db.select("""
+SELECT wiki.*
+FROM source AS wiki
+WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
+AND json_extract(wiki.metadata, '$.canonical') = {}
+""", entry["slug"])
 )
 
 %if canonicals:
@@ -87,17 +98,22 @@ canonicals = [
 </article>
 
 %(
-pages = [
-  page
-  for page in db.select({"type": "wiki"})
-  if entry["slug"] in page.get("tags", [])]
-)
+pages = db.select("""
+SELECT wiki.*
+FROM source AS wiki
+WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
+AND {} IN (SELECT value FROM json_each(wiki.metadata, '$.tags'))
+""", entry["slug"])
 
-%(
-tags = [
-  tag
-  for tag in db.select({"type": "wiki"})
-  if tag.get("slug", None) in entry["tags"]]
+tags = db.select(
+'''
+SELECT tag.*
+FROM json_each({}) as tags
+JOIN source as tag
+ON tags.value = json_extract(tag.metadata, '$.slug')
+AND json_extract(tag.metadata, '$.type') = 'wiki'
+''',
+json.dumps(entry["tags"]))
 tag_slugs = [tag["slug"] for tag in tags]
 )
 

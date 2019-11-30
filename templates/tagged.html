@@ -1,11 +1,5 @@
 %extends("templates/base.html")
-
-%(
-from werkzeug.routing import NotFound
-if not entries:
-    raise NotFound()
-entry = entries[0]
-)
+%require(entry)
 
 %def title():
 Tagged: %entry["title"]
@@ -19,10 +13,12 @@ Tagged: %entry["title"]
 
 <p>回到"<a href="%urls.build('wiki', {'slug': entry['slug']})">%entry["title"]</a>"</p>
 %(
-pages = [
-  page
-  for page in db.select({"type": "wiki"})
-  if entry["slug"] in page.get("tags", [])]
+pages = db.select("""
+SELECT wiki.*
+FROM source AS wiki
+WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
+AND {} IN (SELECT value FROM json_each(wiki.metadata, '$.tags'))
+""", entry["slug"])
 )
 %if pages:
 <ul>
