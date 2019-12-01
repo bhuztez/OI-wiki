@@ -1,0 +1,90 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+快速排序
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>快速排序
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/quick-sort.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/quick-sort.md"><i class="material-icons">history</i></a></h1>
+
+<aside class="contents">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">算法</a></li>
+<li><a href="#k">线性找第 k 大的数</a></li>
+</ul>
+</aside>
+
+
+
+
+
+<h2 id="_1">算法</h2>
+<p>快速排序是 <a href="./divide-and-conquer.md">分治</a> 地来将一个数组排序。</p>
+<p>快速排序分为三个过程：</p>
+<ol>
+<li>将数列划分为两部分（不是直接分，要求保证相对大小关系）</li>
+<li>递归到两个子序列中分别进行快速排序</li>
+<li>不用合并，因为此时数列已经完全有序</li>
+</ol>
+<p>和归并排序不同，第一步并不是直接分成前后两个序列，而是在分的过程中要保证相对大小关系。</p>
+<p>第三步中的序列已经分别有序且第一个序列中的数都小于第二个数，所以直接拼接起来就好了。</p>
+<p>具体来说，第一步要是要把数列分成两个部分，然后保证前一个子数列中的数都小于后一个子数列中的数。</p>
+<p>怎么操作呢？为了保证平均时间复杂度，一般是随机选择一个数 m 来当做两个子数列的分界。</p>
+<p>之后，维护一前一后两个指针 p 和 q，依次考虑当前的数是否放在了应该放的位置（前还是后），当前位置放对了之后，再移动指针继续处理，直到两个指针相遇。</p>
+<p>如果当前的数没放对呢？比如说如果后面的指针 q 遇到了一个比 m 小的数，那么可以交换 p 和 q 位置上的数，再把 p 向后移一位。</p>
+<p>其实，快速排序没有指定应如何具体实现第一步，不论是选择 m 的过程还是划分的过程，都不是只有一种实现方法。</p>
+<p>一般我们说的快速排序的时间复杂度是平均为 <span class="arithmatex">\(O(n\log n)\)</span> ，最坏是 <span class="arithmatex">\(O(n^2)\)</span> ，实践中几乎不可能达到最坏情况。且因为快速排序的内存访问遵循局部性原理，多数情况下快速排序的表现大幅优于堆排序等其他复杂度为 <span class="arithmatex">\(O(n \log n)\)</span> 的排序算法。</p>
+<p>其实，在选择 m 的过程中使用 <a href="https://en.wikipedia.org/wiki/Median_of_medians">Median of Medians</a> 算法，就可以保证最坏时间复杂度为 <span class="arithmatex">\(O(n\log n)\)</span> ，但是由于其过于复杂，实践中一般不使用。</p>
+<h2 id="k">线性找第 k 大的数</h2>
+<p>找第 k 大的数（K-th order statistic），最简单的方法是先排序，然后直接找到第 k 大的位置的元素。这样做的时间复杂度是 <span class="arithmatex">\(O(n\log n)​\)</span> ，对于这个问题来说很不划算。事实上，我们有时间复杂度 <span class="arithmatex">\(O(n)​\)</span> 的解法。</p>
+<p>考虑快速排序的划分过程，在快速排序的“划分”结束后，数列 <span class="arithmatex">\(A_{p} \cdots A_{r}​\)</span> 被分成了 <span class="arithmatex">\(A_{p} \cdots A_{q}​\)</span> 和 <span class="arithmatex">\(A_{q+1} \cdots A_{r}​\)</span> ，此时可以按照左边元素的个数（ <span class="arithmatex">\(q - p + 1​\)</span> ）和 k 的大小关系来判断是只在左边还是只在右边递归地求解。</p>
+<p>可以证明，在期望意义下，程序的时间复杂度为 <span class="arithmatex">\(O(n)\)</span> 。</p>
+<h3 id="_2">参考</h3>
+<p><a href="https://stackoverflow.com/questions/22339240/what-algorithms-are-used-in-c11-stdsort-in-different-stl-implementations">https://stackoverflow.com/questions/22339240/what-algorithms-are-used-in-c11-stdsort-in-different-stl-implementations</a> </p>
+<p><a href="https://en.cppreference.com/w/cpp/algorithm/sort">https://en.cppreference.com/w/cpp/algorithm/sort</a> </p>
+<p><a href="http://irootlee.com/juicer_locality/">http://irootlee.com/juicer_locality/</a> </p>
+
+<p>
+<a href="/OI-wiki/tagged/sort.html">排序</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>

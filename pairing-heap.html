@@ -1,0 +1,291 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+配对堆
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>配对堆
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/pairing-heap.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/pairing-heap.md"><i class="material-icons">history</i></a></h1>
+
+<aside class="contents">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">简介</a></li>
+<li><a href="#_2">定义</a></li>
+<li><a href="#_3">各项操作的实现</a></li>
+<li><a href="#_10">复杂度分析</a></li>
+<li><a href="#_11">参考文献</a></li>
+</ul>
+</aside>
+
+
+
+
+
+<h3 id="_1">简介</h3>
+<p>配对堆是一个支持插入，查询/删除最小值，合并，修改元素等操作的数据结构，也就是俗称的可并堆。<br>
+配对堆在 OI 界十分的冷门，但其实跑得比较快，也很好写，但不能可持久化，因为配对堆复杂度是势能分析出来的均摊复杂度。</p>
+<h3 id="_2">定义</h3>
+<p>这里给出一个较为简单的定义，严谨的定义可以查阅参考文献[4]。<br>
+配对堆是一棵带权多叉树（如下图），其权值满足堆性质（即每个节点的权值都小于他的所有儿子）。<br>
+<img alt="" src="./images/pairingheap1.png"></p>
+<p>通常我们使用左儿子右兄弟表示法储存一个配对堆（如下图），从下文可以看出这种方式可以方便配对堆的实现。</p>
+<p><img alt="" src="./images/pairingheap2.png"></p>
+<h3 id="_3">各项操作的实现</h3>
+<h4 id="_4">存储结构定义</h4>
+<p>就是普通的带权多叉树的表示方式。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="n">T</span> <span class="n">v</span><span class="p">;</span>            <span class="c1">// T为权值类型</span>
+  <span class="n">Node</span> <span class="o">*</span><span class="n">ch</span><span class="p">,</span> <span class="o">*</span><span class="n">xd</span><span class="p">;</span>  <span class="c1">// ch为该节点儿子的指针，xd为该节点兄弟的指针。</span>
+                  <span class="c1">//若该节点没有儿子/兄弟则指针指向虚拟空节点。</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table>
+
+<h4 id="_5">查询最小值</h4>
+<p>从配对堆的定义可看出，配对堆的根节点的权值一定最小，所以我们直接返回根节点就行了。</p>
+<h4 id="_6">合并</h4>
+<p>配对堆的合并操作极为简单，直接把根节点权值较大的那个配对堆设成另一个的儿子就好了。（如下图）<br>
+<img alt="" src="./images/pairingheap3.png"><br>
+复杂度的话，操作本身显然是 <span class="arithmatex">\(O(1)\)</span> 的，考虑到对势能的影响后还是均摊 <span class="arithmatex">\(O(1)\)</span> </p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">merge</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">Node</span><span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 若有一个为空则直接返回另一个</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">b</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">v</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">-&gt;</span><span class="n">v</span><span class="p">)</span> <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>  <span class="c1">// swap后a为权值小的堆，b为权值大的堆</span>
+  <span class="c1">//将b设为a的儿子</span>
+  <span class="n">b</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">;</span>
+  <span class="n">a</span><span class="o">-&gt;</span><span class="n">ch</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h4 id="_7">插入</h4>
+<p>合并都有了，插入就直接把新元素视为一个新的配对堆和原堆合并就行啦。</p>
+<h4 id="_8">删除最小值</h4>
+<p>到这里我们会发现，前面的几个操作都十分偷懒，几乎完全没有对数据结构进行维护，所以删除最小值是配对堆最重要的（也是最复杂）的一个操作。<br>
+考虑我们拿掉根节点之后会发生什么，根节点原来的所有儿子构成了一片森林，所以我们要把他们合并起来。<br>
+一个很自然的想法是使用 <code>merge</code> 函数把儿子们一个一个并在一起，这样做的话正确性是显然的，但是会导致复杂度退化到 <span class="arithmatex">\(O(n)\)</span> 。为了保证删除操作的均摊复杂度为 <span class="arithmatex">\(O(\log n)\)</span> ，我们需要：把儿子们两两配成一对，先用 <code>merge</code> 操作把被配成同一对的两个儿子合并到一起（见下图 1)，再按上述方法将新产生的堆暴力合并在一起（见下图 2）。<img alt="" src="./images/pairingheap4.jpg"><img alt="" src="./images/pairingheap5.jpg"></p>
+<p>先实现一个辅助函数 <code>merges</code> ，作用是合并一个节点的所有兄弟。</p>
+<h5 id="merges">递归版本的 merges（推荐）</h5>
+<p>实现上，推荐使用这种好写的递归式实现。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">merges</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">node</span> <span class="o">||</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">;</span>  <span class="c1">//如果该树为空或他没有兄弟（即他的父亲的儿子数小于2），就直接return。</span>
+  <span class="n">Node</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>  <span class="c1">// a：x的一个兄弟，b：x的另一个兄弟</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>         <span class="c1">//拆散</span>
+  <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">merges</span><span class="p">(</span><span class="n">b</span><span class="p">));</span>  <span class="c1">//核心部分</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>最后一句话是该函数的核心，这句话分三部分：</p>
+<ol>
+<li><code>merge(x,a)</code> “配对”了 x 和 a。</li>
+<li><code>merges(b)</code> 递归合并 b 和他的兄弟们。</li>
+<li>将上面 2 个操作产生的 2 个新树合并。</li>
+</ol>
+<h5 id="merges_1">迭代版本的 merges</h5>
+<p>迭代版本不仅不好写，而且实现不优越的话还不一定比递归版快（下面这个就是不优越的实现，跑的不比上面的递归版本快），所以更推荐写递归版。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">merges</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Node</span><span class="o">*</span> <span class="n">t</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">!=</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Node</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">));</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>然后 <code>delete-min</code> 操作就显然了。（因为这个封装实在没啥用，实际在实现时中一般不显式写出这个函数）</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">delete_min</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">merges</span><span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">);</span> <span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h4 id="_9">减小一个元素的值</h4>
+<p>要实现这个操作，需要给节点添加一个 father 指针，会使实现变得相对复杂。<br>
+首先节点的定义修改为：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="n">T</span> <span class="n">v</span><span class="p">;</span>
+  <span class="n">Node</span> <span class="o">*</span><span class="n">ch</span><span class="p">,</span> <span class="o">*</span><span class="n">xd</span><span class="p">;</span>
+  <span class="n">Node</span> <span class="o">*</span><span class="n">fa</span><span class="p">;</span>  <span class="c1">//新增：fa指针，指向该节点的父亲，若该节点为根节点则指向虚拟空节点</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table>
+
+<p><code>merge</code> 操作修改为：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">merge</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">Node</span><span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">b</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">v</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">-&gt;</span><span class="n">v</span><span class="p">)</span> <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+  <span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+  <span class="n">b</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>  <span class="c1">//新增：维护fa指针</span>
+  <span class="n">b</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">;</span>
+  <span class="n">a</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>  <span class="c1">//新增：维护fa指针</span>
+  <span class="n">a</span><span class="o">-&gt;</span><span class="n">ch</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p><code>merges</code> 操作修改为：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">Node</span><span class="o">*</span> <span class="nf">merges</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>  <span class="c1">//新增：维护fa指针</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">node</span> <span class="o">||</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
+  <span class="n">Node</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+  <span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>  <span class="c1">//新增：维护fa指针</span>
+  <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">merges</span><span class="p">(</span><span class="n">b</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>现在我们来考虑如何实现 <code>decrease-key</code> 操作。<br>
+首先我们发现，当我们对节点 x 进行 <code>decrease-key</code> 操作后，以 <span class="arithmatex">\(x\)</span> 为根的子树仍然满足配对堆性质，但 <span class="arithmatex">\(x\)</span> 的父亲和 <span class="arithmatex">\(x\)</span> 之间可能不再满足堆性质。<br>
+因此我们可以把整棵以 <span class="arithmatex">\(x\)</span> 为根的子树剖出来，这样现在两棵树都符合配对堆性质了，再把他们 <code>merge</code> 起来就做完了。<br>
+这个操作本身复杂度显然为 <span class="arithmatex">\(O(1)\)</span> ，但会破坏原有的势能分析过程，因此均摊复杂度难以证明（目前学术界还无法给出复杂度的精确值），通常可以简单的认为复杂度为 <span class="arithmatex">\(o(\log n)\)</span> （注意这里为小 o）。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1">// root为堆的根，x为要操作的节点，v为新的权值，调用时需保证x-&gt;v&lt;=v</span>
+<span class="c1">//返回值为新的根节点</span>
+<span class="n">Node</span><span class="o">*</span> <span class="n">decrease</span> <span class="o">-</span> <span class="n">key</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">root</span><span class="p">,</span> <span class="n">Node</span><span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">LL</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>                     <span class="c1">//修改权值</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">==</span> <span class="n">node</span><span class="p">)</span> <span class="k">return</span> <span class="n">x</span><span class="p">;</span>  <span class="c1">//如果x为根，就不用接下去的步骤了。</span>
+  <span class="c1">//把x从fa的子节点中剖出去，这里要分x的位置讨论一下。</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span><span class="o">-&gt;</span><span class="n">ch</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span><span class="o">-&gt;</span><span class="n">ch</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>
+  <span class="k">else</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="p">;</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span><span class="p">;</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">xd</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+  <span class="n">x</span><span class="o">-&gt;</span><span class="n">fa</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nf">merge</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>  <span class="c1">//合并root和x。</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h3 id="_10">复杂度分析</h3>
+<p>见 <a href="http://www.cs.cmu.edu/~sleator/papers/pairing-heaps.pdf">配对堆的论文</a> 。</p>
+<h3 id="_11">参考文献</h3>
+<ol>
+<li><a href="https://hooccooh.blog.luogu.org/solution-p3377">HOOCCOOH 的题解</a> </li>
+<li>集训队论文《黄源河 -- 左偏树的特点及其应用》</li>
+<li><a href="https://wenku.baidu.com/view/f2527bc2bb4cf7ec4afed06d.html">《配对堆中文版》</a> </li>
+<li><a href="https://en.wikipedia.org/wiki/Pairing_heap">维基百科 pairing heap 词条</a> </li>
+<li><a href="https://blog.csdn.net/luofeixiongsix/article/details/50640668">https://blog.csdn.net/luofeixiongsix/article/details/50640668</a> </li>
+<li><a href="https://brilliant.org/wiki/pairing-heap/">https://brilliant.org/wiki/pairing-heap/</a> （注：本条目所有图片均来自这里）</li>
+</ol>
+
+<p>
+<a href="/OI-wiki/tagged/heap.html">堆</a>
+<a href="/OI-wiki/tagged/data-structure.html">数据结构</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>

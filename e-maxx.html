@@ -1,0 +1,361 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+E-Maxx
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>E-Maxx
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx.md"><i class="material-icons">history</i></a></h1>
+
+<aside class="contents">
+<h2>目录</h2>
+<ul>
+<li><a href="#data-structures">Data Structures</a></li>
+<li><a href="#dynamic-programming">Dynamic Programming</a></li>
+<li><a href="#string-processing">String Processing</a></li>
+<li><a href="#linear-algebra">Linear Algebra</a></li>
+<li><a href="#combinatorics">Combinatorics</a></li>
+<li><a href="#numerical-methods">Numerical Methods</a></li>
+<li><a href="#geometry">Geometry</a></li>
+<li><a href="#graphs">Graphs</a></li>
+<li><a href="#miscellaneous">Miscellaneous</a></li>
+</ul>
+</aside>
+
+
+
+
+
+<ul>
+<li><strong>Fundamentals</strong><ul>
+<li><a href="./algebra/binary-exp.html">Binary Exponentiation</a></li>
+<li><a href="./algebra/euclid-algorithm.html">Euclidean algorithm for computing the greatest common divisor</a></li>
+<li><a href="./algebra/extended-euclid-algorithm.html">Extended Euclidean Algorithm</a></li>
+<li><a href="./algebra/linear-diophantine-equation.html">Linear Diophantine Equations</a></li>
+<li><a href="./algebra/fibonacci-numbers.html">Fibonacci Numbers</a></li>
+</ul>
+</li>
+<li><strong>Prime numbers</strong><ul>
+<li><a href="./algebra/sieve-of-eratosthenes.html">Sieve of Eratosthenes</a></li>
+<li><a href="./algebra/prime-sieve-linear.html">Sieve of Eratosthenes With Linear Time Complexity</a></li>
+<li><a href="./algebra/primality_tests.html">Primality tests</a></li>
+<li><a href="./algebra/factorization.html">Integer factorization</a></li>
+</ul>
+</li>
+<li><strong>Number-theoretic functions</strong><ul>
+<li><a href="./algebra/phi-function.html">Euler's totient function</a></li>
+<li><a href="./algebra/divisors.html">Number of divisors / sum of divisors</a></li>
+</ul>
+</li>
+<li><strong>Modular arithmetic</strong><ul>
+<li><a href="./algebra/module-inverse.html">Modular Inverse</a></li>
+<li><a href="./algebra/linear_congruence_equation.html">Linear Congruence Equation</a></li>
+<li><a href="./algebra/chinese-remainder-theorem.html">Chinese Remainder Theorem</a></li>
+<li><a href="./algebra/factorial-modulo.html">Factorial modulo <span class="arithmatex">\(p\)</span></a></li>
+<li><a href="./algebra/discrete-root.html">Discrete Root</a></li>
+<li><a href="./algebra/primitive-root.html">Primitive Root</a></li>
+<li><a href="./algebra/discrete-log.html">Discrete Log</a></li>
+<li><a href="./algebra/montgomery_multiplication.html">Montgomery Multiplication</a></li>
+</ul>
+</li>
+<li><strong>Number systems</strong><ul>
+<li><a href="./algebra/balanced-ternary.html">Balanced Ternary</a></li>
+<li><a href="./algebra/gray-code.html">Gray code</a></li>
+</ul>
+</li>
+<li><strong>Miscellaneous</strong><ul>
+<li><a href="./algebra/all-submasks.html">Enumerating submasks of a bitmask</a></li>
+<li><a href="./algebra/big-integer.html">Arbitrary-Precision Arithmetic</a></li>
+<li><a href="./algebra/fft.html">Fast Fourier transform</a></li>
+<li><a href="./algebra/polynomial.html">Operations on polynomials and series</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="data-structures">Data Structures</h3>
+<ul>
+<li><strong>Fundamentals</strong><ul>
+<li><a href="./data_structures/stack_queue_modification.html">Minimum Stack / Minimum Queue</a></li>
+<li><a href="./data_structures/sparse-table.html">Sparse Table</a></li>
+</ul>
+</li>
+<li><strong>Trees</strong><ul>
+<li><a href="./data_structures/disjoint_set_union.html">Disjoint Set Union</a></li>
+<li><a href="./data_structures/fenwick.html">Fenwick Tree</a></li>
+<li><a href="./data_structures/sqrt_decomposition.html">Sqrt Decomposition</a></li>
+<li><a href="./data_structures/segment_tree.html">Segment Tree</a></li>
+<li><a href="./data_structures/treap.html">Treap</a></li>
+<li><a href="/OI-wiki/e-maxx/data_structures/sqrt-tree.html">Sqrt Tree</a></li>
+<li><a href="./data_structures/randomized_heap.html">Randomized Heap</a></li>
+</ul>
+</li>
+<li><strong>Advanced</strong><ul>
+<li><a href="./data_structures/deleting_in_log_n.html">Deleting from a data structure in O(T(n)log n)</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="dynamic-programming">Dynamic Programming</h3>
+<ul>
+<li><strong>DP optimizations</strong><ul>
+<li><a href="./dynamic_programming/divide-and-conquer-dp.html">Divide and Conquer DP</a></li>
+</ul>
+</li>
+<li><strong>Tasks</strong><ul>
+<li><a href="./dynamic_programming/profile-dynamics.html">Dynamic Programming on Broken Profile. Problem "Parquet"</a></li>
+<li><a href="./dynamic_programming/zero_matrix.html">Finding the largest zero submatrix</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="string-processing">String Processing</h3>
+<ul>
+<li><strong>Fundamentals</strong><ul>
+<li><a href="./string/string-hashing.html">String Hashing</a></li>
+<li><a href="./string/rabin-karp.html">Rabin-Karp for String Matching</a></li>
+<li><a href="./string/prefix-function.html">Prefix function</a></li>
+<li><a href="./string/z-function.html">Z-function</a></li>
+<li><a href="./string/suffix-array.html">Suffix Array</a></li>
+<li><a href="./string/aho_corasick.html">Aho-Corasick algorithm</a></li>
+</ul>
+</li>
+<li><strong>Advanced</strong><ul>
+<li><a href="./string/suffix-tree-ukkonen.html">Suffix Tree</a></li>
+<li><a href="./string/suffix-automaton.html">Suffix Automaton</a></li>
+<li><a href="./string/lyndon_factorization.html">Lyndon factorization</a></li>
+</ul>
+</li>
+<li><strong>Tasks</strong><ul>
+<li><a href="./string/expression_parsing.html">Expression parsing</a></li>
+<li><a href="./string/manacher.html">Manacher's Algorithm - Finding all sub-palindromes in O(N)</a></li>
+<li><a href="./string/main_lorentz.html">Finding repetitions</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="linear-algebra">Linear Algebra</h3>
+<ul>
+<li><strong>Matrices</strong><ul>
+<li><a href="./linear_algebra/linear-system-gauss.html">Gauss &amp; System of Linear Equations</a></li>
+<li><a href="./linear_algebra/determinant-gauss.html">Gauss &amp; Determinant</a></li>
+<li><a href="./linear_algebra/determinant-kraut.html">Kraut &amp; Determinant</a></li>
+<li><a href="./linear_algebra/rank-matrix.html">Rank of a matrix</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="combinatorics">Combinatorics</h3>
+<ul>
+<li><strong>Fundamentals</strong><ul>
+<li><a href="./algebra/factorial-divisors.html">Finding Power of Factorial Divisor</a></li>
+<li><a href="./combinatorics/binomial-coefficients.html">Binomial Coefficients</a></li>
+<li><a href="./combinatorics/catalan-numbers.html">Catalan Numbers</a></li>
+</ul>
+</li>
+<li><strong>Techniques</strong><ul>
+<li><a href="./combinatorics/inclusion-exclusion.html">The Inclusion-Exclusion Principle</a></li>
+<li><a href="./combinatorics/burnside.html">Burnside's lemma / Pólya enumeration theorem</a></li>
+<li><a href="./combinatorics/stars_and_bars.html">Stars and bars</a></li>
+<li><a href="./combinatorics/generating_combinations.html">Generating all <span class="arithmatex">\(K\)</span>-combinations</a></li>
+</ul>
+</li>
+<li><strong>Tasks</strong><ul>
+<li><a href="./combinatorics/bishops-on-chessboard.html">Placing Bishops on a Chessboard</a></li>
+<li><a href="./combinatorics/bracket_sequences.html">Balanced bracket sequences</a></li>
+<li><a href="./combinatorics/counting_labeled_graphs.html">Counting labeled graphs</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="numerical-methods">Numerical Methods</h3>
+<ul>
+<li><strong>Search</strong><ul>
+<li><a href="./num_methods/ternary_search.html">Ternary Search</a></li>
+<li><a href="./num_methods/roots_newton.html">Newton's method for finding roots</a></li>
+</ul>
+</li>
+<li><strong>Integration</strong><ul>
+<li><a href="./num_methods/simpson-integration.html">Integration by Simpson's formula</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="geometry">Geometry</h3>
+<ul>
+<li><strong>Elementary operations</strong><ul>
+<li><a href="./geometry/basic-geometry.html">Basic Geometry</a></li>
+<li><a href="./geometry/segment-to-line.html">Finding the equation of a line for a segment</a></li>
+<li><a href="./geometry/lines-intersection.html">Intersection Point of Lines</a></li>
+<li><a href="./geometry/check-segments-intersection.html">Check if two segments intersect</a></li>
+<li><a href="./geometry/segments-intersection.html">Intersection of Segments</a></li>
+<li><a href="./geometry/circle-line-intersection.html">Circle-Line Intersection</a></li>
+<li><a href="./geometry/circle-circle-intersection.html">Circle-Circle Intersection</a></li>
+<li><a href="./geometry/tangents-to-two-circles.html">Common tangents to two circles</a></li>
+<li><a href="./geometry/length-of-segments-union.html">Length of the union of segments</a></li>
+</ul>
+</li>
+<li><strong>Polygons</strong><ul>
+<li><a href="./geometry/oriented-triangle-area.html">Oriented area of a triangle</a></li>
+<li><a href="./geometry/area-of-simple-polygon.html">Area of simple polygon</a></li>
+<li><a href="./geometry/point-in-convex-polygon.html">Check if points belong to the convex polygon in O(log N)</a></li>
+<li><a href="./geometry/picks-theorem.html">Pick's Theorem - area of lattice polygons</a></li>
+<li><a href="./geometry/lattice-points.html">Lattice points of non-lattice polygon</a></li>
+</ul>
+</li>
+<li><strong>Convex hull</strong><ul>
+<li><a href="./geometry/grahams-scan-convex-hull.html">Convex hull construction using Graham's Scan</a></li>
+<li><a href="./geometry/convex_hull_trick.html">Convex hull trick and Li Chao tree</a></li>
+</ul>
+</li>
+<li><strong>Sweep-line</strong><ul>
+<li><a href="./geometry/intersecting_segments.html">Search for a pair of intersecting segments</a></li>
+<li><a href="./geometry/point-location.html">Point location in O(log N)</a></li>
+</ul>
+</li>
+<li><strong>Miscellaneous</strong><ul>
+<li><a href="./geometry/nearest_points.html">Finding the nearest pair of points</a></li>
+<li><a href="./geometry/delaunay.html">Delaunay triangulation and Voronoi diagram</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="graphs">Graphs</h3>
+<ul>
+<li><strong>Graph traversal</strong><ul>
+<li><a href="./graph/breadth-first-search.html">Breadth First Search</a></li>
+<li><a href="./graph/depth-first-search.html">Depth First Search</a></li>
+</ul>
+</li>
+<li><strong>Connected components, bridges, articulations points</strong><ul>
+<li><a href="./graph/search-for-connected-components.html">Finding Connected Components</a></li>
+<li><a href="./graph/bridge-searching.html">Finding Bridges in O(N+M)</a></li>
+<li><a href="./graph/bridge-searching-online.html">Finding Bridges Online</a></li>
+<li><a href="./graph/cutpoints.html">Finding Articulation Points in O(N+M)</a></li>
+<li><a href="./graph/strongly-connected-components.html">Strongly Connected Components and Condensation Graph</a></li>
+<li><a href="./graph/strong-orientation.html">Strong Orientation</a></li>
+</ul>
+</li>
+<li><strong>Single-source shortest paths</strong><ul>
+<li><a href="./graph/dijkstra.html">Dijkstra - finding shortest paths from given vertex</a></li>
+<li><a href="./graph/dijkstra_sparse.html">Dijkstra on sparse graphs</a></li>
+<li><a href="./graph/bellman_ford.html">Bellman-Ford - finding shortest paths with negative weights</a></li>
+<li><a href="./graph/01_bfs.html">0-1 BFS</a></li>
+<li><a href="./graph/desopo_pape.html">D´Esopo-Pape algorithm</a></li>
+</ul>
+</li>
+<li><strong>All-pairs shortest paths</strong><ul>
+<li><a href="./graph/all-pair-shortest-path-floyd-warshall.html">Floyd-Warshall - finding all shortest paths</a></li>
+<li><a href="./graph/fixed_length_paths.html">Number of paths of fixed length / Shortest paths of fixed length</a></li>
+</ul>
+</li>
+<li><strong>Spanning trees</strong><ul>
+<li><a href="./graph/mst_prim.html">Minimum Spanning Tree - Prim's Algorithm</a></li>
+<li><a href="./graph/mst_kruskal.html">Minimum Spanning Tree - Kruskal</a></li>
+<li><a href="./graph/mst_kruskal_with_dsu.html">Minimum Spanning Tree - Kruskal with Disjoint Set Union</a></li>
+<li><a href="./graph/second_best_mst.html">Second best Minimum Spanning Tree - Using Kruskal and Lowest Common Ancestor</a></li>
+<li><a href="./graph/kirchhoff-theorem.html">Kirchhoff Theorem</a></li>
+<li><a href="./graph/pruefer_code.html">Prüfer code</a></li>
+</ul>
+</li>
+<li><strong>Cycles</strong><ul>
+<li><a href="./graph/finding-cycle.html">Checking a graph for acyclicity and finding a cycle in O(M)</a></li>
+<li><a href="./graph/finding-negative-cycle-in-graph.html">Finding a Negative Cycle in the Graph</a></li>
+<li><a href="./graph/euler_path.html">Eulerian Path</a></li>
+</ul>
+</li>
+<li><strong>Lowest common ancestor</strong><ul>
+<li><a href="./graph/lca.html">Lowest Common Ancestor</a></li>
+<li><a href="./graph/lca_binary_lifting.html">Lowest Common Ancestor - Binary Lifting</a></li>
+<li><a href="./graph/lca_farachcoltonbender.html">Lowest Common Ancestor - Farach-Colton and Bender algorithm</a></li>
+<li><a href="./graph/rmq_linear.html">Solve RMQ by finding LCA</a></li>
+<li><a href="./graph/lca_tarjan.html">Lowest Common Ancestor - Tarjan's off-line algorithm</a></li>
+</ul>
+</li>
+<li><strong>Flows and related problems</strong><ul>
+<li><a href="./graph/edmonds_karp.html">Maximum flow - Ford-Fulkerson and Edmonds-Karp</a></li>
+<li><a href="./graph/push-relabel.html">Maximum flow - Push-relabel algorithm</a></li>
+<li><a href="./graph/push-relabel-faster.html">Maximum flow - Push-relabel algorithm improved</a></li>
+<li><a href="./graph/dinic.html">Maximum flow - Dinic's algorithm</a></li>
+<li><a href="./graph/mpm.html">Maximum flow - MPM algorithm</a></li>
+<li><a href="./graph/flow_with_demands.html">Flows with demands</a></li>
+<li><a href="./graph/min_cost_flow.html">Minimum-cost flow</a></li>
+<li><a href="./graph/Assignment-problem-min-flow.html">Assignment problem. Solution using min-cost-flow in O (N^5)</a></li>
+</ul>
+</li>
+<li><strong>Matchings and related problems</strong><ul>
+<li><a href="./graph/bipartite-check.html">Bipartite Graph Check</a></li>
+</ul>
+</li>
+<li><strong>Miscellaneous</strong><ul>
+<li><a href="./graph/topological-sort.html">Topological Sorting</a></li>
+<li><a href="./graph/edge_vertex_connectivity.html">Edge connectivity / Vertex connectivity</a></li>
+<li><a href="./graph/tree_painting.html">Tree painting</a></li>
+<li><a href="./graph/2SAT.html">2-SAT</a></li>
+<li><a href="./graph/hld.html">Heavy-light decomposition</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="miscellaneous">Miscellaneous</h3>
+<ul>
+<li><strong>Sequences</strong><ul>
+<li><a href="./sequences/rmq.html">RMQ task (Range Minimum Query - the smallest element in an interval)</a></li>
+<li><a href="./sequences/longest_increasing_subsequence.html">Longest increasing subsequence</a></li>
+<li><a href="./others/maximum_average_segment.html">Search the subsegment with the maximum/minimum sum</a></li>
+<li><a href="./sequences/k-th.html">K-th order statistic in O(N)</a></li>
+</ul>
+</li>
+<li><strong>Game Theory</strong><ul>
+<li><a href="./game_theory/games_on_graphs.html">Games on arbitrary graphs</a></li>
+<li><a href="./game_theory/sprague-grundy-nim.html">Sprague-Grundy theorem. Nim</a></li>
+</ul>
+</li>
+<li><strong>Schedules</strong><ul>
+<li><a href="./schedules/schedule_one_machine.html">Scheduling jobs on one machine</a></li>
+<li><a href="./schedules/schedule_two_machines.html">Scheduling jobs on two machines</a></li>
+<li><a href="./schedules/schedule-with-completion-duration.html">Optimal schedule of jobs given their deadlines and durations</a></li>
+</ul>
+</li>
+<li><strong>Miscellaneous</strong><ul>
+<li><a href="./others/josephus_problem.html">Josephus problem</a></li>
+<li><a href="./others/15-puzzle.html">15 Puzzle Game: Existence Of The Solution</a></li>
+<li><a href="./others/stern_brocot_tree_farey_sequences.html">The Stern-Brocot Tree and Farey Sequences</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>本页面主要译自 <a href="https://cp-algorithms.com/">CP-Algorithms</a> ，版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+<p>
+<a href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>

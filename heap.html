@@ -1,0 +1,134 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+堆
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>堆
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/heap.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/heap.md"><i class="material-icons">history</i></a></h1>
+
+<aside class="contents">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">堆的分类</a></li>
+</ul>
+</aside>
+
+
+
+
+
+<p>堆是一棵树，其每个节点都有一个键值，且每个节点的键值都大于等于/小于等于其父亲的键值。</p>
+<p>每个节点的键值都大于等于其父亲键值的堆叫做小根堆，否则叫做大根堆。STL 中的 <code>priority_queue</code> 其实就是一个大根堆。</p>
+<p>（小根）堆主要支持的操作有：插入一个数、查询最小值、删除最小值、合并两个堆、减小一个元素的值。</p>
+<p>一些功能强大的堆（可并堆）还能（高效地）支持 merge 等操作。</p>
+<p>一些功能更强大的堆还支持可持久化，也就是对任意历史版本进行查询或者操作，产生新的版本。</p>
+<h2 id="_1">堆的分类</h2>
+<table>
+<thead>
+<tr>
+<th align="center">操作\数据结构</th>
+<th align="center"><a href="/OI-wiki/pairing-heap.html">配对堆</a></th>
+<th align="center">二叉堆</th>
+<th align="center">左偏树</th>
+<th align="center">二项堆</th>
+<th align="center">斐波那契堆</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">插入（insert）</td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td align="center">查询最小值（find-min）</td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td align="center">删除最小值（delete-min）</td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+</tr>
+<tr>
+<td align="center">合并 (merge)</td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td align="center">减小一个元素的值 (decrease-key)</td>
+<td align="center"><span class="arithmatex">\(o(\log n) (下界\Omega(\log \log n) ，\\\\上界 O(2^{2\sqrt{\log \log n}}) )\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(\log n)\)</span></td>
+<td align="center"><span class="arithmatex">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td align="center">是否支持可持久化</td>
+<td align="center"><span class="arithmatex">\(\times\)</span></td>
+<td align="center"><span class="arithmatex">\(\checkmark\)</span></td>
+<td align="center"><span class="arithmatex">\(\checkmark\)</span></td>
+<td align="center"><span class="arithmatex">\(\checkmark\)</span></td>
+<td align="center"><span class="arithmatex">\(\times\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>习惯上，不加限定提到“堆”时往往都指二叉堆。</p>
+
+<p>
+<a href="/OI-wiki/tagged/heap.html">堆</a>
+<a href="/OI-wiki/tagged/abstract-data-type.html">抽象数据类型</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>

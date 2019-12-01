@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+计数排序
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>计数排序
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/counting-sort.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/counting-sort.md"><i class="material-icons">history</i></a></h1>
+
+
+
+
+
+
+<p>计数排序是一种复杂度为 <span class="arithmatex">\(O(n+w)\)</span> 的稳定排序，其中 <span class="arithmatex">\(w\)</span> 代表待排序数据的值域大小。</p>
+<p>计数排序分为三个步骤：</p>
+<ol>
+<li>计算每个数出现了几次。</li>
+<li>求出每个数出现次数的前缀和。</li>
+<li>利用出现次数的前缀和，从右至左计算每个数的排名。</li>
+</ol>
+<p>伪代码：</p>
+<div class="arithmatex">\[
+\begin{array}{ll}
+1 &amp; \textbf{Input. } \text{An array } A \text{ consisting of }n\text{ positive integers no greater than } w. \\
+2 &amp; \textbf{Output. } \text{Array }A\text{ after sorting in nondecreasing order stably.} \\
+3 &amp; \textbf{Method. }  \\
+4 &amp; \textbf{for }i\gets0\textbf{ to }w\\
+5 &amp; \qquad cnt[i]\gets0\\
+6 &amp; \textbf{for }i\gets1\textbf{ to }n\\
+7 &amp; \qquad cnt[A[i]]\gets cnt[A[i]]+1\\
+8 &amp; \textbf{for }i\gets1\textbf{ to }w\\
+9 &amp; \qquad cnt[i]\gets cnt[i]+cnt[i-1]\\
+10 &amp; \textbf{for }i\gets n\textbf{ downto }1\\
+11 &amp; \qquad B[cnt[A[i]]]\gets A[i]\\
+12 &amp; \qquad cnt[A[i]]\gets cnt[A[i]]-1\\
+13 &amp; \textbf{return } B
+\end{array}
+\]</div>
+<p>C++ 代码：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="k">const</span> <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">100010</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">int</span> <span class="n">W</span> <span class="o">=</span> <span class="mi">100010</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">cnt</span><span class="p">[</span><span class="n">W</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+
+<span class="kt">void</span> <span class="nf">counting_sort</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">cnt</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cnt</span><span class="p">));</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="o">++</span><span class="n">cnt</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">cnt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cnt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="n">b</span><span class="p">[</span><span class="n">cnt</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">--</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>
+<a href="/OI-wiki/tagged/sort.html">排序</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+冒泡排序
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<div class="navbar">
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</div>
+
+<main>
+
+<article>
+<h1>冒泡排序
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/bubble-sort.md"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/bubble-sort.md"><i class="material-icons">history</i></a></h1>
+
+
+
+
+
+
+<p>冒泡排序是一种稳定的排序方法。</p>
+<p>以升序为例，冒泡排序每次检查相邻两个元素，如果前面的元素大于后面的元素，就将相邻两个元素交换。当没有相邻的元素需要交换时，排序就完成了。</p>
+<p>经过 <span class="arithmatex">\(i\)</span> 次扫描后，数列的末尾 <span class="arithmatex">\(i\)</span> 项必然是最大的 <span class="arithmatex">\(i\)</span> 项，因此最多需要扫描 <span class="arithmatex">\(n-1\)</span> 遍数组就能完成排序。</p>
+<p>在序列完全有序时，该算法只需遍历一遍数组，不用执行任何交换操作，时间复杂度为 <span class="arithmatex">\(O(n)\)</span> 。在最坏情况下，冒泡排序要执行 <span class="arithmatex">\(\frac{(n-1)n}{2}\)</span> 次交换操作，时间复杂度为 <span class="arithmatex">\(O(n^2)\)</span> 。在平均情况下，冒泡排序的时间复杂度也是 <span class="arithmatex">\(O(n^2)\)</span> 。</p>
+<p>伪代码：</p>
+<div class="arithmatex">\[
+\begin{array}{ll}
+1 &amp; \textbf{Input. } \text{An array } A \text{ consisting of }n\text{ elements.} \\
+2 &amp; \textbf{Output. } A\text{ will be sorted in nondecreasing order stably.} \\
+3 &amp; \textbf{Method. }  \\
+4 &amp; flag\gets True\\
+5 &amp; \textbf{while }flag\\
+6 &amp; \qquad flag\gets False\\
+7 &amp; \qquad\textbf{for }i\gets1\textbf{ to }n-1\\
+8 &amp; \qquad\qquad\textbf{if }A[i]&gt;A[i + 1]\\
+9 &amp; \qquad\qquad\qquad flag\gets True\\
+10 &amp; \qquad\qquad\qquad \text{Swap } A[i]\text{ and }A[i + 1]
+\end{array}
+\]</div>
+<p>C++ 代码：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="nf">bubble_sort</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">bool</span> <span class="n">flag</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>
+<a href="/OI-wiki/tagged/sort.html">排序</a>
+</p>
+
+</article>
+
+</main>
+
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+
+</body>
+</html>
