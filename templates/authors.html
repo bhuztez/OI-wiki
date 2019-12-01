@@ -1,22 +1,18 @@
-%extends("templates/base.html")
-%require(entries)
+$extends("templates/base.html")
+$require(entries)
 
-%def title():
+$def title():
 Authors
-%end
+$end
 
-%def content():
-<div class="md-content">
-<div class="md-content__inner">
-<article class="md-typeset">
-<h1>%title()</h1>
+$def content():
+<article>
+<h1>$title()</h1>
 
 <ul>
-%for author in entries:
-<li><a href="%urls.build('author', {'slug': author['slug']})">%author["name"]</a></li>
-%endfor
+$for author in entries:
+<li><a href="$urls.build('author', {'slug': author['slug']})">$author["name"]</a></li>
+$endfor
 </ul>
 </article>
-</div>
-</div>
-%end
+$end

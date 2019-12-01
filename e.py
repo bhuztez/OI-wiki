@@ -31,27 +31,44 @@ def wiki(filename, meta):
         "authors": meta.get("author", []),
         "tags": meta.get("tag", [])}
 
-def prob(filename, meta):
-    oj = os.path.dirname(filename[6:])
-    pid = os.path.splitext(os.path.basename(filename))[0]
-    slug = f"{oj}-{pid}"
-    tags = meta.get("tag", [])
-    if oj not in tags:
-        tags = tags + [oj]
+def source_link(collection, pid):
+    if collection == 'LUOGU':
+        return f"https://www.luogu.org/problem/{pid}"
 
-    return {
+def prob(filename, meta):
+    collection = os.path.dirname(filename[6:])
+    pid = os.path.splitext(os.path.basename(filename))[0]
+    slug = f"{collection}-{pid}"
+    tags = meta.get("tag", [])
+    if collection not in tags:
+        tags = tags + [collection]
+
+    result = {
         "type": "wiki",
         "slug": slug,
         "title": slug + ": " + meta.get("title", [""])[0],
         "authors": meta.get("author", []),
         "tags": tags,
+        "collection": collection,
+        "pid": pid,
         "canonical": meta.get("canonical", [None])[0]}
+    source = source_link(collection, pid)
+    if source is not None:
+        result["source"] = source
+    return result
+
+def css(filename, meta):
+    return {
+        'type': 'css',
+        'slug': filename[7:-4],
+    }
 
 
 SOURCE_FILES = [
     ("authors/*.md", 'markdown', author),
     ("wiki/**/*.md", 'markdown', wiki),
-    ("probs/**/*.md", 'markdown', prob)
+    ("probs/**/*.md", 'markdown', prob),
+    ("static/*.css", 'wheezy', css)
 ]
 
 URLS = [
@@ -76,8 +93,9 @@ URLS = [
         defaults={'type': 'wiki'},
         endpoint='wiki'),
     Rule(
-        '/static/<path:path>',
-        endpoint='static'),
+        '/static/<slug>.css',
+        defaults={'type': 'css'},
+        endpoint='css'),
     Rule(
         '/<path:path>',
         endpoint='media')
@@ -88,7 +106,7 @@ class views(config):
     author_list = EntryListView(template_name='templates/authors.html')
     author = EntryView(template_name='templates/author.html')
     tagged = EntryView(template_name='templates/tagged.html')
-    static = StaticFileView('static', ("*~", ".*", "*.md"))
+    css = RawEntryView(mimetype='text/css')
     media = StaticFileView('wiki', ("*~", ".*", "*.md"))
 
 

@@ -1,18 +1,16 @@
-%extends("templates/base.html")
-%require(entry)
+$extends("templates/base.html")
+$require(entry)
 
-%def title():
-Tagged: %entry["title"]
-%end
+$def title():
+Tagged: $entry["title"]
+$end
 
-%def content():
-<div class="md-content">
-<div class="md-content__inner">
-<article class="md-typeset">
-<h1>%title()</h1>
+$def content():
+<article>
+<h1>$title()</h1>
 
-<p>回到"<a href="%urls.build('wiki', {'slug': entry['slug']})">%entry["title"]</a>"</p>
-%(
+<p>回到"<a href="$urls.build('wiki', {'slug': entry['slug']})">$entry["title"]</a>"</p>
+$(
 pages = db.select("""
 SELECT wiki.*
 FROM source AS wiki
@@ -20,15 +18,13 @@ WHERE json_extract(wiki.metadata, '$.type') = 'wiki'
 AND {} IN (SELECT value FROM json_each(wiki.metadata, '$.tags'))
 """, entry["slug"])
 )
-%if pages:
+$if pages:
 <ul>
-%for page in pages:
-<li><a href="%urls.build('wiki', {'slug': page['slug']})">%page["title"]</a></li>
-%end
+$for page in pages:
+<li><a href="$urls.build('wiki', {'slug': page['slug']})">$page["title"]</a></li>
+$end
 </ul>
-%end
+$end
 
 </article>
-</div>
-</div>
-%end
+$end
