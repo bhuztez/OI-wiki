@@ -24,11 +24,11 @@ $site_title</title>
 </head>
 <body>
 
-<div class="navbar">
+<header>
 <nav>
 <a href="$urls.build('wiki', {'slug': 'index'})"><i class="material-icons">school</i> $site_title</a>
 </nav>
-</div>
+</header>
 
 <main>
 $def content():
@@ -36,6 +36,7 @@ $end
 $content()
 </main>
 
+<div class="footer">
 <footer>
 <p>&copy; 2016-2019 OI Wiki Team</p>
 
@@ -43,6 +44,7 @@ $def footer():
 $end
 $footer()
 </footer>
+</div>
 
 </body>
 </html>

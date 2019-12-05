@@ -48,22 +48,12 @@ $def content():
 <article>
 $if not is_home:
 <h1>$title()
-<a href="https://github.com/OI-wiki/OI-wiki/blob/master/$entry.filename"><i class="material-icons">create</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/$entry.filename"><i class="material-icons">edit</i></a>
 <a href="https://github.com/OI-wiki/OI-wiki/commits/master/$entry.filename"><i class="material-icons">history</i></a></h1>
 $end
 
-$if entry.content.toc_tokens and not is_home:
-<aside class="contents">
-<h2>目录</h2>
-<ul>
-$for token in entry.content.toc_tokens:
-<li><a href="#$token["id"]">$token["name"]</a></li>
-$end
-</ul>
-</aside>
-$end
 
-
+<aside class="right">
 $if entry.get("canonical", None) is not None:
 $(
 canonical = db.get("""
@@ -87,20 +77,16 @@ AND json_extract(wiki.metadata, '$.canonical') = {}
 )
 
 $if canonicals:
-<h4>Canonicals</h4>
-<ul>
+<h4>同题</h4>
 $for canonical in canonicals:
-<li>
-<a href="$urls.build('wiki', {'slug': canonical['slug']})">$canonical["title"]</a>
 $if "source" in canonical:
-<a href="$canonical['source']"><i class="material-icons">launch</i></a>
+<a class="canonical" href="$canonical['source']">$canonical["slug"]</a>
+$else:
+<span class="canonical">$canonical["slug"]<span>
 $end
-</li>
 $end
-</ul>
 $end
 
-$entry.content
 
 $(
 pages = db.select("""
@@ -122,20 +108,40 @@ json.dumps(entry["tags"]))
 tag_slugs = [tag["slug"] for tag in tags]
 )
 
-<p>
+$if pages or tags:
+<h4>标签</h4>
+$end
+
 $if pages:
-<a href="$urls.build('tagged', {'slug': entry['slug']})">$entry["title"]</a>
+<a class="tag" href="$urls.build('tagged', {'slug': entry['slug']})">$entry["title"]</a>
 $end
 $for tag in tags:
-<a href="$urls.build('tagged', {'slug': tag['slug']})">$tag["title"]</a>
+<a class="tag" href="$urls.build('tagged', {'slug': tag['slug']})">$tag["title"]</a>
 $end
 $for tag in entry["tags"]:
 $if tag not in tag_slugs:
-<span>$tag</span>
+<span class="tag">$tag</span>
 $( warn(f"{entry.filename}: tag {tag!r} not found") )
 $end
 $end
-</p>
+
+</aside>
+
+
+<aside class="left">
+$if entry.content.toc_tokens and not is_home:
+<h2>目录</h2>
+<ul>
+$for token in entry.content.toc_tokens:
+<li><a href="#$token["id"]">$token["name"]</a></li>
+$end
+</ul>
+$end
+</aside>
+
+
+$entry.content
 
 </article>
+
 $end

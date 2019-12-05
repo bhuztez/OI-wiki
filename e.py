@@ -24,12 +24,16 @@ def author(filename, meta):
 
 def wiki(filename, meta):
     slug = filename[5:-3]
+    tags = meta.get("tag", [])
+    if "/" in slug:
+        tags.append(slug.split("/")[0])
+
     return {
         "type": "wiki",
         "slug": slug,
         "title": meta.get("title", [slug])[0],
         "authors": meta.get("author", []),
-        "tags": meta.get("tag", [])}
+        "tags": tags}
 
 def source_link(collection, pid):
     if collection == 'LUOGU':
@@ -138,7 +142,7 @@ AND json_extract(source.metadata, '$.slug') = {}
         if entry is None:
             text = target
         else:
-            if values['type'] == 'author':
+            if type == 'author':
                 text = entry["name"]
             else:
                 text = entry["title"]
@@ -146,18 +150,19 @@ AND json_extract(source.metadata, '$.slug') = {}
     if entry is not None and entry.get("canonical", None) is not None:
         return build_link(entry["canonical"], text)
 
-    return url, text
+    return url, text, entry is not None
 
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
 from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
+WIKILINK_RE = r'\[\[(?P<target>[@\w/0-9:_ -]+)(?P<text>|(?:[^\]]*))?\]\]'
+
 class WikiLinkExtension(Extension):
 
     def extendMarkdown(self, md, md_globals):
         self.md = md
-        WIKILINK_RE = r'\[\[(?P<target>[@\w/0-9:_ -]+)(?P<text>(?:\|[\w/0-9:_ -]+)?)\]\]'
         pattern = WikiLinks(WIKILINK_RE)
         pattern.md = md
         md.inlinePatterns.add('wikilink', pattern, "<not_strong")
@@ -169,10 +174,12 @@ class WikiLinks(Pattern):
         target = m.group("target")
         text = m.group("text")
         text = text[1:] if text else None
-        url, text = build_link(target, text)
+        url, text, exist = build_link(target, text)
         a = etree.Element('a')
         a.text = text
         a.set('href', url)
+        if not exist:
+            a.set("class", "new")
         return a
 
 class readers(config):

@@ -1,6 +1,5 @@
 Title: Sqrt Tree
 Tag: data-structure
-Tag: e-maxx
 
 给你一个长度为 n 的序列 $\left\langle a_i\right\rangle_{i=1}^n$ ，再给你一个满足结合律的运算 $\circ$ （比如 $\gcd,\min,\max,+,\operatorname{and},\operatorname{or},\operatorname{xor}$ 均满足结合律），然后对于每一次区间询问 $[l,r]$ ，我们需要计算 $a_l\circ a_{l+1}\circ\dotsb\circ a_{r}$ 。
 

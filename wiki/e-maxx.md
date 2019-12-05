@@ -1,212 +1,214 @@
 Title: E-Maxx
 
+### Algebra
+
 - **Fundamentals**
-    - [Binary Exponentiation](./algebra/binary-exp.html)
-    - [Euclidean algorithm for computing the greatest common divisor](./algebra/euclid-algorithm.html)
-    - [Extended Euclidean Algorithm](./algebra/extended-euclid-algorithm.html)
-    - [Linear Diophantine Equations](./algebra/linear-diophantine-equation.html)
-    - [Fibonacci Numbers](./algebra/fibonacci-numbers.html)
+    - [[e-maxx/binary-exp|Binary Exponentiation]]
+    - [[e-maxx/euclid-algorithm|Euclidean algorithm for computing the greatest common divisor]]
+    - [[e-maxx/extended-euclid-algorithm|Extended Euclidean Algorithm]]
+    - [[e-maxx/linear-diophantine-equation|Linear Diophantine Equations]]
+    - [[e-maxx/fibonacci-numbers|Fibonacci Numbers]]
 - **Prime numbers**
-    - [Sieve of Eratosthenes](./algebra/sieve-of-eratosthenes.html)
-    - [Sieve of Eratosthenes With Linear Time Complexity](./algebra/prime-sieve-linear.html)
-    - [Primality tests](./algebra/primality_tests.html)
-    - [Integer factorization](./algebra/factorization.html)
+    - [[e-maxx/sieve-of-eratosthenes|Sieve of Eratosthenes]]
+    - [[e-maxx/prime-sieve-linear|Sieve of Eratosthenes With Linear Time Complexity]]
+    - [[e-maxx/primality_tests|Primality tests]]
+    - [[e-maxx/factorization|Integer factorization]]
 - **Number-theoretic functions**
-    - [Euler's totient function](./algebra/phi-function.html)
-    - [Number of divisors / sum of divisors](./algebra/divisors.html)
+    - [[e-maxx/phi-function|Euler's totient function]]
+    - [[e-maxx/divisors|Number of divisors / sum of divisors]]
 - **Modular arithmetic**
-    - [Modular Inverse](./algebra/module-inverse.html)
-    - [Linear Congruence Equation](./algebra/linear_congruence_equation.html)
-    - [Chinese Remainder Theorem](./algebra/chinese-remainder-theorem.html)
-    - [Factorial modulo $p$](./algebra/factorial-modulo.html)
-    - [Discrete Root](./algebra/discrete-root.html)
-    - [Primitive Root](./algebra/primitive-root.html)
-    - [Discrete Log](./algebra/discrete-log.html)
-    - [Montgomery Multiplication](./algebra/montgomery_multiplication.html)
+    - [[e-maxx/module-inverse|Modular Inverse]]
+    - [[e-maxx/linear_congruence_equation|Linear Congruence Equation]]
+    - [[e-maxx/chinese-remainder-theorem|Chinese Remainder Theorem]]
+    - [[e-maxx/factorial-modulo|Factorial modulo $p$]]
+    - [[e-maxx/discrete-root|Discrete Root]]
+    - [[e-maxx/primitive-root|Primitive Root]]
+    - [[e-maxx/discrete-log|Discrete Log]]
+    - [[e-maxx/montgomery_multiplication|Montgomery Multiplication]]
 - **Number systems**
-    - [Balanced Ternary](./algebra/balanced-ternary.html)
-    - [Gray code](./algebra/gray-code.html)
+    - [[e-maxx/balanced-ternary|Balanced Ternary]]
+    - [[e-maxx/gray-code|Gray code]]
 - **Miscellaneous**
-    - [Enumerating submasks of a bitmask](./algebra/all-submasks.html)
-    - [Arbitrary-Precision Arithmetic](./algebra/big-integer.html)
-    - [Fast Fourier transform](./algebra/fft.html)
-    - [Operations on polynomials and series](./algebra/polynomial.html)
+    - [[e-maxx/all-submasks|Enumerating submasks of a bitmask]]
+    - [[e-maxx/big-integer|Arbitrary-Precision Arithmetic]]
+    - [[e-maxx/fft|Fast Fourier transform]]
+    - [[e-maxx/polynomial|Operations on polynomials and series]]
 
 ### Data Structures
 
 - **Fundamentals**
-    - [Minimum Stack / Minimum Queue](./data_structures/stack_queue_modification.html)
-    - [Sparse Table](./data_structures/sparse-table.html)
+    - [[e-maxx/stack_queue_modification|Minimum Stack / Minimum Queue]]
+    - [[e-maxx/sparse-table|Sparse Table]]
 - **Trees**
-    - [Disjoint Set Union](./data_structures/disjoint_set_union.html)
-    - [Fenwick Tree](./data_structures/fenwick.html)
-    - [Sqrt Decomposition](./data_structures/sqrt_decomposition.html)
-    - [Segment Tree](./data_structures/segment_tree.html)
-    - [Treap](./data_structures/treap.html)
-    - [[e-maxx/data_structures/sqrt-tree]]
-    - [Randomized Heap](./data_structures/randomized_heap.html)
+    - [[e-maxx/disjoint_set_union|Disjoint Set Union]]
+    - [[e-maxx/fenwick|Fenwick Tree]]
+    - [[e-maxx/sqrt_decomposition|Sqrt Decomposition]]
+    - [[e-maxx/segment_tree|Segment Tree]]
+    - [[e-maxx/treap|Treap]]
+    - [[e-maxx/sqrt-tree|Sqrt Tree]]
+    - [[e-maxx/randomized_heap|Randomized Heap]]
 - **Advanced**
-    - [Deleting from a data structure in O(T(n)log n)](./data_structures/deleting_in_log_n.html)
+    - [[e-maxx/deleting_in_log_n|Deleting from a data structure in O(T(n)log n)]]
 
 ### Dynamic Programming
 
 - **DP optimizations**
-    - [Divide and Conquer DP](./dynamic_programming/divide-and-conquer-dp.html)
+    - [[e-maxx/divide-and-conquer-dp|Divide and Conquer DP]]
 - **Tasks**
-    - [Dynamic Programming on Broken Profile. Problem "Parquet"](./dynamic_programming/profile-dynamics.html)
-    - [Finding the largest zero submatrix](./dynamic_programming/zero_matrix.html)
+    - [[e-maxx/profile-dynamics|Dynamic Programming on Broken Profile. Problem "Parquet"]]
+    - [[e-maxx/zero_matrix|Finding the largest zero submatrix]]
 
 ### String Processing
 
 - **Fundamentals**
-    - [String Hashing](./string/string-hashing.html)
-    - [Rabin-Karp for String Matching](./string/rabin-karp.html)
-    - [Prefix function](./string/prefix-function.html)
-    - [Z-function](./string/z-function.html)
-    - [Suffix Array](./string/suffix-array.html)
-    - [Aho-Corasick algorithm](./string/aho_corasick.html)
+    - [[e-maxx/string-hashing|String Hashing]]
+    - [[e-maxx/rabin-karp|Rabin-Karp for String Matching]]
+    - [[e-maxx/prefix-function|Prefix function]]
+    - [[e-maxx/z-function|Z-function]]
+    - [[e-maxx/suffix-array|Suffix Array]]
+    - [[e-maxx/aho_corasick|Aho-Corasick algorithm]]
 - **Advanced**
-    - [Suffix Tree](./string/suffix-tree-ukkonen.html)
-    - [Suffix Automaton](./string/suffix-automaton.html)
-    - [Lyndon factorization](./string/lyndon_factorization.html)
+    - [[e-maxx/suffix-tree-ukkonen|Suffix Tree]]
+    - [[e-maxx/suffix-automaton|Suffix Automaton]]
+    - [[e-maxx/lyndon_factorization|Lyndon factorization]]
 - **Tasks**
-    - [Expression parsing](./string/expression_parsing.html)
-    - [Manacher's Algorithm - Finding all sub-palindromes in O(N)](./string/manacher.html)
-    - [Finding repetitions](./string/main_lorentz.html)
+    - [[e-maxx/expression_parsing|Expression parsing]]
+    - [[e-maxx/manacher|Manacher's Algorithm - Finding all sub-palindromes in O(N)]]
+    - [[e-maxx/main_lorentz|Finding repetitions]]
 
 ### Linear Algebra
 
 - **Matrices**
-    - [Gauss & System of Linear Equations](./linear_algebra/linear-system-gauss.html)
-    - [Gauss & Determinant](./linear_algebra/determinant-gauss.html)
-    - [Kraut & Determinant](./linear_algebra/determinant-kraut.html)
-    - [Rank of a matrix](./linear_algebra/rank-matrix.html)
+    - [[e-maxx/linear-system-gauss|Gauss & System of Linear Equations]]
+    - [[e-maxx/determinant-gauss|Gauss & Determinant]]
+    - [[e-maxx/determinant-kraut|Kraut & Determinant]]
+    - [[e-maxx/rank-matrix|Rank of a matrix]]
 
 ### Combinatorics
 
 - **Fundamentals**
-    - [Finding Power of Factorial Divisor](./algebra/factorial-divisors.html)
-    - [Binomial Coefficients](./combinatorics/binomial-coefficients.html)
-    - [Catalan Numbers](./combinatorics/catalan-numbers.html)
+    - [[e-maxx/factorial-divisors|Finding Power of Factorial Divisor]]
+    - [[e-maxx/binomial-coefficients|Binomial Coefficients]]
+    - [[e-maxx/catalan-numbers|Catalan Numbers]]
 - **Techniques**
-    - [The Inclusion-Exclusion Principle](./combinatorics/inclusion-exclusion.html)
-    - [Burnside's lemma / Pólya enumeration theorem](./combinatorics/burnside.html)
-    - [Stars and bars](./combinatorics/stars_and_bars.html)
-    - [Generating all $K$-combinations](./combinatorics/generating_combinations.html)
+    - [[e-maxx/inclusion-exclusion|The Inclusion-Exclusion Principle]]
+    - [[e-maxx/burnside|Burnside's lemma / Pólya enumeration theorem]]
+    - [[e-maxx/stars_and_bars|Stars and bars]]
+    - [[e-maxx/generating_combinations|Generating all $K$-combinations]]
 - **Tasks**
-    - [Placing Bishops on a Chessboard](./combinatorics/bishops-on-chessboard.html)
-    - [Balanced bracket sequences](./combinatorics/bracket_sequences.html)
-    - [Counting labeled graphs](./combinatorics/counting_labeled_graphs.html)
+    - [[e-maxx/bishops-on-chessboard|Placing Bishops on a Chessboard]]
+    - [[e-maxx/bracket_sequences|Balanced bracket sequences]]
+    - [[e-maxx/counting_labeled_graphs|Counting labeled graphs]]
 
 ### Numerical Methods
 
 - **Search**
-    - [Ternary Search](./num_methods/ternary_search.html)
-    - [Newton's method for finding roots](./num_methods/roots_newton.html)
+    - [[e-maxx/ternary_search|Ternary Search]]
+    - [[e-maxx/roots_newton|Newton's method for finding roots]]
 - **Integration**
-    - [Integration by Simpson's formula](./num_methods/simpson-integration.html)
+    - [[e-maxx/simpson-integration|Integration by Simpson's formula]]
 
 ### Geometry
 
 - **Elementary operations**
-    - [Basic Geometry](./geometry/basic-geometry.html)
-    - [Finding the equation of a line for a segment](./geometry/segment-to-line.html)
-    - [Intersection Point of Lines](./geometry/lines-intersection.html)
-    - [Check if two segments intersect](./geometry/check-segments-intersection.html)
-    - [Intersection of Segments](./geometry/segments-intersection.html)
-    - [Circle-Line Intersection](./geometry/circle-line-intersection.html)
-    - [Circle-Circle Intersection](./geometry/circle-circle-intersection.html)
-    - [Common tangents to two circles](./geometry/tangents-to-two-circles.html)
-    - [Length of the union of segments](./geometry/length-of-segments-union.html)
+    - [[e-maxx/basic-geometry|Basic Geometry]]
+    - [[e-maxx/segment-to-line|Finding the equation of a line for a segment]]
+    - [[e-maxx/lines-intersection|Intersection Point of Lines]]
+    - [[e-maxx/check-segments-intersection|Check if two segments intersect]]
+    - [[e-maxx/segments-intersection|Intersection of Segments]]
+    - [[e-maxx/circle-line-intersection|Circle-Line Intersection]]
+    - [[e-maxx/circle-circle-intersection|Circle-Circle Intersection]]
+    - [[e-maxx/tangents-to-two-circles|Common tangents to two circles]]
+    - [[e-maxx/length-of-segments-union|Length of the union of segments]]
 - **Polygons**
-    - [Oriented area of a triangle](./geometry/oriented-triangle-area.html)
-    - [Area of simple polygon](./geometry/area-of-simple-polygon.html)
-    - [Check if points belong to the convex polygon in O(log N)](./geometry/point-in-convex-polygon.html)
-    - [Pick's Theorem - area of lattice polygons](./geometry/picks-theorem.html)
-    - [Lattice points of non-lattice polygon](./geometry/lattice-points.html)
+    - [[e-maxx/oriented-triangle-area|Oriented area of a triangle]]
+    - [[e-maxx/area-of-simple-polygon|Area of simple polygon]]
+    - [[e-maxx/point-in-convex-polygon|Check if points belong to the convex polygon in O(log N)]]
+    - [[e-maxx/picks-theorem|Pick's Theorem - area of lattice polygons]]
+    - [[e-maxx/lattice-points|Lattice points of non-lattice polygon]]
 - **Convex hull**
-    - [Convex hull construction using Graham's Scan](./geometry/grahams-scan-convex-hull.html)
-    - [Convex hull trick and Li Chao tree](./geometry/convex_hull_trick.html)
+    - [[e-maxx/grahams-scan-convex-hull|Convex hull construction using Graham's Scan]]
+    - [[e-maxx/convex_hull_trick|Convex hull trick and Li Chao tree]]
 - **Sweep-line**
-    - [Search for a pair of intersecting segments](./geometry/intersecting_segments.html)
-    - [Point location in O(log N)](./geometry/point-location.html)
+    - [[e-maxx/intersecting_segments|Search for a pair of intersecting segments]]
+    - [[e-maxx/point-location|Point location in O(log N)]]
 - **Miscellaneous**
-    - [Finding the nearest pair of points](./geometry/nearest_points.html)
-    - [Delaunay triangulation and Voronoi diagram](./geometry/delaunay.html)
+    - [[e-maxx/nearest_points|Finding the nearest pair of points]]
+    - [[e-maxx/delaunay|Delaunay triangulation and Voronoi diagram]]
 
 ### Graphs
 
 - **Graph traversal**
-    - [Breadth First Search](./graph/breadth-first-search.html)
-    - [Depth First Search](./graph/depth-first-search.html)
+    - [[e-maxx/breadth-first-search|Breadth First Search]]
+    - [[e-maxx/depth-first-search|Depth First Search]]
 - **Connected components, bridges, articulations points**
-    - [Finding Connected Components](./graph/search-for-connected-components.html)
-    - [Finding Bridges in O(N+M)](./graph/bridge-searching.html)
-    - [Finding Bridges Online](./graph/bridge-searching-online.html)
-    - [Finding Articulation Points in O(N+M)](./graph/cutpoints.html)
-    - [Strongly Connected Components and Condensation Graph](./graph/strongly-connected-components.html)
-    - [Strong Orientation](./graph/strong-orientation.html)
+    - [[e-maxx/search-for-connected-components|Finding Connected Components]]
+    - [[e-maxx/bridge-searching|Finding Bridges in O(N+M)]]
+    - [[e-maxx/bridge-searching-online|Finding Bridges Online]]
+    - [[e-maxx/cutpoints|Finding Articulation Points in O(N+M)]]
+    - [[e-maxx/strongly-connected-components|Strongly Connected Components and Condensation Graph]]
+    - [[e-maxx/strong-orientation|Strong Orientation]]
 - **Single-source shortest paths**
-    - [Dijkstra - finding shortest paths from given vertex](./graph/dijkstra.html)
-    - [Dijkstra on sparse graphs](./graph/dijkstra_sparse.html)
-    - [Bellman-Ford - finding shortest paths with negative weights](./graph/bellman_ford.html)
-    - [0-1 BFS](./graph/01_bfs.html)
-    - [D´Esopo-Pape algorithm](./graph/desopo_pape.html)
+    - [[e-maxx/dijkstra|Dijkstra - finding shortest paths from given vertex]]
+    - [[e-maxx/dijkstra_sparse|Dijkstra on sparse graphs]]
+    - [[e-maxx/bellman_ford|Bellman-Ford - finding shortest paths with negative weights]]
+    - [[e-maxx/01_bfs|0-1 BFS]]
+    - [[e-maxx/desopo_pape|D´Esopo-Pape algorithm]]
 - **All-pairs shortest paths**
-    - [Floyd-Warshall - finding all shortest paths](./graph/all-pair-shortest-path-floyd-warshall.html)
-    - [Number of paths of fixed length / Shortest paths of fixed length](./graph/fixed_length_paths.html)
+    - [[e-maxx/all-pair-shortest-path-floyd-warshall|Floyd-Warshall - finding all shortest paths]]
+    - [[e-maxx/fixed_length_paths|Number of paths of fixed length / Shortest paths of fixed length]]
 - **Spanning trees**
-    - [Minimum Spanning Tree - Prim's Algorithm](./graph/mst_prim.html)
-    - [Minimum Spanning Tree - Kruskal](./graph/mst_kruskal.html)
-    - [Minimum Spanning Tree - Kruskal with Disjoint Set Union](./graph/mst_kruskal_with_dsu.html)
-    - [Second best Minimum Spanning Tree - Using Kruskal and Lowest Common Ancestor](./graph/second_best_mst.html)
-    - [Kirchhoff Theorem](./graph/kirchhoff-theorem.html)
-    - [Prüfer code](./graph/pruefer_code.html)
+    - [[e-maxx/mst_prim|Minimum Spanning Tree - Prim's Algorithm]]
+    - [[e-maxx/mst_kruskal|Minimum Spanning Tree - Kruskal]]
+    - [[e-maxx/mst_kruskal_with_dsu|Minimum Spanning Tree - Kruskal with Disjoint Set Union]]
+    - [[e-maxx/second_best_mst|Second best Minimum Spanning Tree - Using Kruskal and Lowest Common Ancestor]]
+    - [[e-maxx/kirchhoff-theorem|Kirchhoff Theorem]]
+    - [[e-maxx/pruefer_code|Prüfer code]]
 - **Cycles**
-    - [Checking a graph for acyclicity and finding a cycle in O(M)](./graph/finding-cycle.html)
-    - [Finding a Negative Cycle in the Graph](./graph/finding-negative-cycle-in-graph.html)
-    - [Eulerian Path](./graph/euler_path.html)
+    - [[e-maxx/finding-cycle|Checking a graph for acyclicity and finding a cycle in O(M)]]
+    - [[e-maxx/finding-negative-cycle-in-graph|Finding a Negative Cycle in the Graph]]
+    - [[e-maxx/euler_path|Eulerian Path]]
 - **Lowest common ancestor**
-    - [Lowest Common Ancestor](./graph/lca.html)
-    - [Lowest Common Ancestor - Binary Lifting](./graph/lca_binary_lifting.html)
-    - [Lowest Common Ancestor - Farach-Colton and Bender algorithm](./graph/lca_farachcoltonbender.html)
-    - [Solve RMQ by finding LCA](./graph/rmq_linear.html)
-    - [Lowest Common Ancestor - Tarjan's off-line algorithm](./graph/lca_tarjan.html)
+    - [[e-maxx/lca|Lowest Common Ancestor]]
+    - [[e-maxx/lca_binary_lifting|Lowest Common Ancestor - Binary Lifting]]
+    - [[e-maxx/lca_farachcoltonbender|Lowest Common Ancestor - Farach-Colton and Bender algorithm]]
+    - [[e-maxx/rmq_linear|Solve RMQ by finding LCA]]
+    - [[e-maxx/lca_tarjan|Lowest Common Ancestor - Tarjan's off-line algorithm]]
 - **Flows and related problems**
-    - [Maximum flow - Ford-Fulkerson and Edmonds-Karp](./graph/edmonds_karp.html)
-    - [Maximum flow - Push-relabel algorithm](./graph/push-relabel.html)
-    - [Maximum flow - Push-relabel algorithm improved](./graph/push-relabel-faster.html)
-    - [Maximum flow - Dinic's algorithm](./graph/dinic.html)
-    - [Maximum flow - MPM algorithm](./graph/mpm.html)
-    - [Flows with demands](./graph/flow_with_demands.html)
-    - [Minimum-cost flow](./graph/min_cost_flow.html)
-    - [Assignment problem. Solution using min-cost-flow in O (N^5)](./graph/Assignment-problem-min-flow.html)
+    - [[e-maxx/edmonds_karp|Maximum flow - Ford-Fulkerson and Edmonds-Karp]]
+    - [[e-maxx/push-relabel|Maximum flow - Push-relabel algorithm]]
+    - [[e-maxx/push-relabel-faster|Maximum flow - Push-relabel algorithm improved]]
+    - [[e-maxx/dinic|Maximum flow - Dinic's algorithm]]
+    - [[e-maxx/mpm|Maximum flow - MPM algorithm]]
+    - [[e-maxx/flow_with_demands|Flows with demands]]
+    - [[e-maxx/min_cost_flow|Minimum-cost flow]]
+    - [[e-maxx/Assignment-problem-min-flow|Assignment problem. Solution using min-cost-flow in O (N^5)]]
 - **Matchings and related problems**
-    - [Bipartite Graph Check](./graph/bipartite-check.html)
+    - [[e-maxx/bipartite-check|Bipartite Graph Check]]
 - **Miscellaneous**
-    - [Topological Sorting](./graph/topological-sort.html)
-    - [Edge connectivity / Vertex connectivity](./graph/edge_vertex_connectivity.html)
-    - [Tree painting](./graph/tree_painting.html)
-    - [2-SAT](./graph/2SAT.html)
-    - [Heavy-light decomposition](./graph/hld.html)
+    - [[e-maxx/topological-sort|Topological Sorting]]
+    - [[e-maxx/edge_vertex_connectivity|Edge connectivity / Vertex connectivity]]
+    - [[e-maxx/tree_painting|Tree painting]]
+    - [[e-maxx/2SAT|2-SAT]]
+    - [[e-maxx/hld|Heavy-light decomposition]]
 
 ### Miscellaneous
 
 - **Sequences**
-    - [RMQ task (Range Minimum Query - the smallest element in an interval)](./sequences/rmq.html)
-    - [Longest increasing subsequence](./sequences/longest_increasing_subsequence.html)
-    - [Search the subsegment with the maximum/minimum sum](./others/maximum_average_segment.html)
-    - [K-th order statistic in O(N)](./sequences/k-th.html)
+    - [[e-maxx/rmq|RMQ task (Range Minimum Query - the smallest element in an interval)]]
+    - [[e-maxx/longest_increasing_subsequence|Longest increasing subsequence]]
+    - [[e-maxx/maximum_average_segment|Search the subsegment with the maximum/minimum sum]]
+    - [[e-maxx/k-th|K-th order statistic in O(N)]]
 - **Game Theory**
-    - [Games on arbitrary graphs](./game_theory/games_on_graphs.html)
-    - [Sprague-Grundy theorem. Nim](./game_theory/sprague-grundy-nim.html)
+    - [[e-maxx/games_on_graphs|Games on arbitrary graphs]]
+    - [[e-maxx/sprague-grundy-nim|Sprague-Grundy theorem. Nim]]
 - **Schedules**
-    - [Scheduling jobs on one machine](./schedules/schedule_one_machine.html)
-    - [Scheduling jobs on two machines](./schedules/schedule_two_machines.html)
-    - [Optimal schedule of jobs given their deadlines and durations](./schedules/schedule-with-completion-duration.html)
+    - [[e-maxx/schedule_one_machine|Scheduling jobs on one machine]]
+    - [[e-maxx/schedule_two_machines|Scheduling jobs on two machines]]
+    - [[e-maxx/schedule-with-completion-duration|Optimal schedule of jobs given their deadlines and durations]]
 - **Miscellaneous**
-    - [Josephus problem](./others/josephus_problem.html)
-    - [15 Puzzle Game: Existence Of The Solution](./others/15-puzzle.html)
-    - [The Stern-Brocot Tree and Farey Sequences](./others/stern_brocot_tree_farey_sequences.html)
+    - [[e-maxx/josephus_problem|Josephus problem]]
+    - [[e-maxx/15-puzzle|15 Puzzle Game: Existence Of The Solution]]
+    - [[e-maxx/stern_brocot_tree_farey_sequences|The Stern-Brocot Tree and Farey Sequences]]
 
  **本页面主要译自 [CP-Algorithms](https://cp-algorithms.com/) ，版权协议为 CC-BY-SA 4.0。** 
