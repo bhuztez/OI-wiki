@@ -1,0 +1,180 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+e-maxx/stern_brocot_tree_farey_sequences
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>e-maxx/stern_brocot_tree_farey_sequences
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/stern_brocot_tree_farey_sequences.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/stern_brocot_tree_farey_sequences.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#stern-brocot">Stern-Brocot 树</a></li>
+<li><a href="#farey">Farey 序列</a></li>
+</ul>
+</aside>
+
+
+<h2 id="stern-brocot">Stern-Brocot 树</h2>
+<p>Stern-Brocot 树是一种维护分数的优雅的数据结构。它分别由 Moritz Stern 在 1858 年和 Achille Brocot 在 1861 年发现这个结构。</p>
+<h3 id="_1">概述</h3>
+<p>Stern-Borcot 树从两个简单的分数开始：</p>
+<div class="arithmatex">\[
+\frac{0}{1}, \frac{1}{0}
+\]</div>
+<p>这个 <span class="arithmatex">\(\frac{1}{0}\)</span> 可能看得你有点懵逼。不过我们不讨论这方面的严谨性，你只需要把它当作 <span class="arithmatex">\(\infty\)</span> 就行了。</p>
+<p>每次我们在相邻的两个分数 <span class="arithmatex">\(\frac{a}{b},\frac{c}{d}\)</span> 中间插入一个分数 <span class="arithmatex">\(\frac{a+c}{b+d}\)</span> ，这样就完成了一次迭代，得到下一个序列。于是它就会变成这样</p>
+<div class="arithmatex">\[
+\begin{array}{c}
+\dfrac{0}{1}, \dfrac{1}{1}, \dfrac{1}{0} \\\\
+\dfrac{0}{1}, \dfrac{1}{2}, \dfrac{1}{1}, \dfrac{2}{1}, \dfrac{1}{0} \\\\
+\dfrac{0}{1}, \dfrac{1}{3}, \dfrac{1}{2}, \dfrac{2}{3}, \dfrac{1}{1}, \dfrac{3}{2}, \dfrac{2}{1}, \dfrac{3}{1}, \dfrac{1}{0}
+\end{array}
+\]</div>
+<p>既然我们叫这个数据结构 Stern-Brocot 树，那么它总得有一个树的样子对吧。来一张图：</p>
+<p><img alt="pic" src="./images/stern-brocot1.png"></p>
+<p>你可以把第 <span class="arithmatex">\(i\)</span> 层的序列当作是深度为 <span class="arithmatex">\(i-1\)</span> 的 Stern-Brocot 树的中序遍历。</p>
+<h3 id="_2">性质</h3>
+<p>接下来讨论一下 Stern-Brocot 树的性质。</p>
+<h4 id="_3">单调性</h4>
+<p>在每一层的序列中，真分数是单调递增的。</p>
+<p>略证：只需要在 <span class="arithmatex">\(\frac{a}{b}\le \frac{c}{d}\)</span> 的情况下证明</p>
+<div class="arithmatex">\[
+\frac{a}{b}\le \frac{a+c}{b+d}\le \frac{c}{d}
+\]</div>
+<p>就行了。这个很容易，直接做一下代数变换即可</p>
+<div class="arithmatex">\[
+\begin{array}{l}
+&amp;\frac{a}{b}\le \frac{c}{d}\\
+\Rightarrow &amp;ad\le bc\\
+\Rightarrow &amp;ad+ab\le bc+ab\\
+\Rightarrow &amp;\frac{a}{b}\le\frac{a+c}{b+d}
+\end{array}
+\]</div>
+<p>另一边同理可证。</p>
+<h4 id="_4">最简性</h4>
+<p>序列中的分数（除了 <span class="arithmatex">\(\frac{0}{1},\frac{1}{0}\)</span> ）都是最简分数。</p>
+<p>略证：为证明最简性，我们首先证明对于序列中连续的两个分数 <span class="arithmatex">\(\frac{a}{b},\frac{c}{d}\)</span> ：</p>
+<div class="arithmatex">\[
+bc-ad=1
+\]</div>
+<p>显然，我们只需要在 <span class="arithmatex">\(bc-ad=1\)</span> 的条件下证明 <span class="arithmatex">\(\frac{a}{b}, \frac{a+c}{b+d}, \frac{c}{d}\)</span> 的情况成立即可。</p>
+<div class="arithmatex">\[
+a(b+d)-b(a+c)=ad-bc=1
+\]</div>
+<p>后半部分同理。证明了这个，利用扩展欧几里德定理，如果上述方程有解，显然 <span class="arithmatex">\(\gcd(a,b)=\gcd(c,d)=1\)</span> 。这样就证完了。</p>
+<p>有了上面的证明，我们可以证明 <span class="arithmatex">\(\frac{a}{b}&lt;\frac{c}{d}\)</span> 。</p>
+<p>有了这两个性质，你就可以把它当成一棵平衡树来做了。建立和查询就向平衡树一样做就行了。</p>
+<h3 id="_5">实现</h3>
+<p>构建实现</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">c</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">d</span><span class="p">;</span>
+  <span class="c1">//... output the current fraction x/y</span>
+  <span class="c1">// at the current level in the tree</span>
+  <span class="n">build</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">build</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>查询实现</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">string</span> <span class="nf">find</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">d</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">m</span> <span class="o">&amp;&amp;</span> <span class="n">y</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sc">&#39;L&#39;</span> <span class="o">+</span> <span class="n">find</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="k">return</span> <span class="sc">&#39;R&#39;</span> <span class="o">+</span> <span class="n">find</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="farey">Farey 序列</h2>
+<p>Stern-Brocot 树与 Farey 序列有着极其相似的特征。第 <span class="arithmatex">\(i\)</span> 个 Farey 序列记作 <span class="arithmatex">\(F_i\)</span> ，表示把分母小于等于 <span class="arithmatex">\(i\)</span> 的所有最简真分数按大小顺序排列形成的序列。</p>
+<div class="arithmatex">\[
+\begin{array}{l}
+F_1=\{&amp;\frac{0}{1},&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;\frac{1}{1}&amp;\}\\
+F_2=\{&amp;\frac{0}{1},&amp;&amp;&amp;&amp;&amp;\frac{1}{2},&amp;&amp;&amp;&amp;&amp;\frac{1}{1}&amp;\}\\
+F_3=\{&amp;\frac{0}{1},&amp;&amp;&amp;\frac{1}{3},&amp;&amp;\frac{1}{2},&amp;&amp;\frac{2}{3},&amp;&amp;&amp;\frac{1}{1}&amp;\}\\
+F_4=\{&amp;\frac{0}{1},&amp;&amp;\frac{1}{4},&amp;\frac{1}{3},&amp;&amp;\frac{1}{2},&amp;&amp;\frac{2}{3},&amp;\frac{3}{4},&amp;&amp;\frac{1}{1}&amp;\}\\
+F_5=\{&amp;\frac{0}{1},&amp;\frac{1}{5},&amp;\frac{1}{4},&amp;\frac{1}{3},&amp;\frac{2}{5},&amp;\frac{1}{2},&amp;\frac{3}{5},&amp;\frac{2}{3},&amp;\frac{3}{4},&amp;\frac{4}{5},&amp;\frac{1}{1}&amp;\}\\
+\end{array}
+\]</div>
+<p>显然，上述构建 Stern-Brocot 树的算法同样适用于构建 Farey 序列。因为 Stern-Brocot 树中的数是最简分数，因此在边界条件（分母）稍微修改一下就可以形成构造 Farey 序列的代码。你可以认为 Farey 序列 <span class="arithmatex">\(F_i\)</span> 是 Stern-Brocot 第 <span class="arithmatex">\(i-1\)</span> 次迭代后得到的序列的子序列。</p>
+<p>Farey 序列同样满足最简性和单调性，并且满足一个与 Stern-Brocot 树相似的性质：对于序列中连续的三个数 <span class="arithmatex">\(\frac ab,\frac xy,\frac cd\)</span> ，有 <span class="arithmatex">\(x=a+c,y=b+d\)</span> 。这个可以轻松证明，不再赘述。</p>
+<p>由 Farey 序列的定义，我们可以得到 <span class="arithmatex">\(F_i\)</span> 的长度 <span class="arithmatex">\(L_i\)</span> 公式为：</p>
+<div class="arithmatex">\[
+L_i=L_{i-1}+\varphi(i)\\
+L_i=1+\sum_{k=1}^i\varphi(k)
+\]</div>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/stern_brocot_farey">Дерево Штерна-Броко. Ряд Фарея</a> 与其英文翻译版 <a href="https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html">The Stern-Brocot Tree and Farey Sequences</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+</div>
+
+</body>
+</html>

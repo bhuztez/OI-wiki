@@ -1,0 +1,156 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Josephus problem
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Josephus problem
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/josephus_problem.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/josephus_problem.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">问题描述</a></li>
+<li><a href="#_2">朴素算法</a></li>
+<li><a href="#_3">简单优化</a></li>
+<li><a href="#_4">线性算法</a></li>
+<li><a href="#_5">对数算法</a></li>
+</ul>
+</aside>
+
+
+<p>约瑟夫问题由来已久，而这个问题的解法也在不断改进，只是目前仍没有一个极其高效的算法（log 以内）解决这个问题。</p>
+<h2 id="_1">问题描述</h2>
+<blockquote>
+<p>n 个人标号 <span class="arithmatex">\(0,1,\cdots, n-1\)</span> 。逆时针站一圈，从 <span class="arithmatex">\(0\)</span> 号开始，每一次从当前的人逆时针数 <span class="arithmatex">\(k\)</span> 个，然后让这个人出局。问最后剩下的人是谁。</p>
+</blockquote>
+<p>这个经典的问题由约瑟夫于公元 1 世纪提出，尽管他当时只考虑了 <span class="arithmatex">\(k=2\)</span> 的情况。现在我们可以用许多高效的算法解决这个问题。</p>
+<h2 id="_2">朴素算法</h2>
+<p>最朴素的算法莫过于直接枚举。用一个环形链表枚举删除的过程，重复 <span class="arithmatex">\(n-1\)</span> 次得到答案。复杂度 <span class="arithmatex">\(\Theta (n^2)\)</span> 。</p>
+<h2 id="_3">简单优化</h2>
+<p>寻找下一个人的过程可以用线段树优化。具体地，开一个 <span class="arithmatex">\(0,1,\cdots, n-1\)</span> 的线段树，然后记录区间内剩下的人的个数。寻找当前的人的位置以及之后的第 <span class="arithmatex">\(k\)</span> 个人可以在线段树上二分做。</p>
+<h2 id="_4">线性算法</h2>
+<p>设 <span class="arithmatex">\(J_{n,k}\)</span> 表示规模分别为 <span class="arithmatex">\(n,k\)</span> 的约瑟夫问题的答案。我们有如下递归式</p>
+<div class="arithmatex">\[
+J_{n,k}=(J_{n-1,k}+k)\bmod n
+\]</div>
+<p>这个也很好推。你从 <span class="arithmatex">\(0\)</span> 开始数 <span class="arithmatex">\(k\)</span> 个，让第 <span class="arithmatex">\(k-1\)</span> 个人出局后剩下 <span class="arithmatex">\(n-1\)</span> 个人，你计算出在 <span class="arithmatex">\(n-1\)</span> 个人中选的答案后，再加一个相对位移 <span class="arithmatex">\(k\)</span> 得到真正的答案。这个算法的复杂度显然是 <span class="arithmatex">\(\Theta (n)\)</span> 的。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">int</span> <span class="nf">josephus</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="_5">对数算法</h2>
+<p>对于 <span class="arithmatex">\(k\)</span> 较小 <span class="arithmatex">\(n\)</span> 较大的情况，本题还有一种复杂度为 <span class="arithmatex">\(\Theta (k\log n)\)</span> 的算法。</p>
+<p>考虑到我们每次走 <span class="arithmatex">\(k\)</span> 个删一个，那么在一圈以内我们可以删掉 <span class="arithmatex">\(\left\lfloor\frac{n}{k}\right\rfloor\)</span> 个，然后剩下了 <span class="arithmatex">\(n-\left\lfloor\frac{n}{k}\right\rfloor\)</span> 个人。这时我们在第 <span class="arithmatex">\(\left\lfloor\frac{n}{k}\right\rfloor\cdot k\)</span> 个人的位置上。而你发现这个东西它等于 <span class="arithmatex">\(n-n\bmod k\)</span> 。于是我们继续递归处理，算完后还原它的相对位置。得到如下的算法：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">int</span> <span class="nf">josephus</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">)</span> <span class="k">return</span> <span class="p">(</span><span class="n">josephus</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">;</span>  <span class="c1">// 线性算法</span>
+  <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="n">josephus</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">n</span> <span class="o">/</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+  <span class="n">res</span> <span class="o">-=</span> <span class="n">n</span> <span class="o">%</span> <span class="n">k</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>  <span class="c1">// mod n</span>
+  <span class="k">else</span>
+    <span class="n">res</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>  <span class="c1">// 还原位置</span>
+  <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>可以证明这个算法的复杂度是 <span class="arithmatex">\(\Theta (k\log n)\)</span> 的。我们设这个过程的递归次数是 <span class="arithmatex">\(x\)</span> ，那么每一次问题规模会大致变成 <span class="arithmatex">\(\displaystyle n\left(1-\frac{1}{k}\right)\)</span> ，于是得到</p>
+<div class="arithmatex">\[
+n\left(1-\frac{1}{k}\right)^x=1
+\]</div>
+<p>解这个方程得到</p>
+<div class="arithmatex">\[
+x=-\frac{\ln n}{\ln\left(1-\frac{1}{k}\right)}
+\]</div>
+<p>下面我们证明该算法的复杂度是 <span class="arithmatex">\(\Theta (k\log n)\)</span> 的。</p>
+<p>考虑 <span class="arithmatex">\(\displaystyle \lim _{k \rightarrow \infty} k \log \left(1-\frac{1}{k}\right)\)</span> ，我们有</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\lim _{k \rightarrow \infty} k \log \left(1-\frac{1}{k}\right)&amp;=\lim _{k \rightarrow \infty} \frac{\log \left(1-\frac{1}{k}\right)}{1 / k}\\
+&amp;=\lim _{k \rightarrow \infty} \frac{\frac{\mathrm d}{\mathrm d k} \log \left(1-\frac{1}{k}\right)}{\frac{\mathrm d}{\mathrm d k}\left(\frac{1}{k}\right)}\\
+&amp;=\lim _{k \rightarrow \infty} \frac{\frac{1}{k^{2}\left(1-\frac{1}{k}\right)}}{-\frac{1}{k^{2}}}\\
+&amp;=\lim _{k \rightarrow \infty}-\frac{k}{k-1}\\
+&amp;=-\lim _{k \rightarrow \infty} \frac{1}{1-\frac{1}{k}}\\
+&amp;=-1
+\end{aligned}
+\]</div>
+<p>所以 <span class="arithmatex">\(x \sim k \ln n, k\to \infty\)</span> ，即 <span class="arithmatex">\(-\dfrac{\ln n}{\ln\left(1-\frac{1}{k}\right)}= \Theta (k\log n)\)</span> </p>
+<p><strong>本页面主要译自博文 <a href="https://e-maxx.ru/algo/joseph_problem">Задача Иосифа</a> 与其英文翻译版 <a href="https://cp-algorithms.com/others/josephus_problem.html">Josephus Problem</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+</div>
+
+</body>
+</html>

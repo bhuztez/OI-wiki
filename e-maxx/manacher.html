@@ -1,0 +1,255 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Manacher's Algorithm - Finding all sub-palindromes in O(N)
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Manacher's Algorithm - Finding all sub-palindromes in O(N)
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/manacher.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/manacher.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">描述</a></li>
+<li><a href="#_2">更进一步的描述</a></li>
+<li><a href="#_3">解法</a></li>
+<li><a href="#_4">朴素算法</a></li>
+<li><a href="#manacher">Manacher 算法</a></li>
+<li><a href="#manacher_1">Manacher 算法的复杂度</a></li>
+<li><a href="#manacher_2">Manacher 算法的实现</a></li>
+<li><a href="#_7">练习题目</a></li>
+</ul>
+</aside>
+
+
+<h2 id="_1">描述</h2>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，请找到所有对 <span class="arithmatex">\((i, j)\)</span> 使得子串 <span class="arithmatex">\(s[i \dots j]\)</span> 为一个回文串。当 <span class="arithmatex">\(t = t_{\text{rev}}\)</span> 时，字符串 <span class="arithmatex">\(t\)</span> 是一个回文串（ <span class="arithmatex">\(t_{\text{rev}}\)</span> 是 <span class="arithmatex">\(t\)</span> 的反转字符串）。</p>
+<h2 id="_2">更进一步的描述</h2>
+<p>显然在最坏情况下可能有 <span class="arithmatex">\(O(n^2)\)</span> 个回文串，因此似乎一眼看过去该问题并没有线性算法。</p>
+<p>但是关于回文串的信息可用 <strong>一种更紧凑的方式</strong> 表达：对于每个位置 <span class="arithmatex">\(i = 0 \dots n - 1\)</span> ，我们找出值 <span class="arithmatex">\(d_1[i]\)</span> 和 <span class="arithmatex">\(d_2[i]\)</span> 。二者分别表示以位置 <span class="arithmatex">\(i\)</span> 为中心的长度为奇数和长度为偶数的回文串个数。</p>
+<p>举例来说，字符串 <span class="arithmatex">\(s = \mathtt{abababc}\)</span> 以 <span class="arithmatex">\(s[3] = b\)</span> 为中心有三个奇数长度的回文串，也即 <span class="arithmatex">\(d_1[3] = 3\)</span> ：</p>
+<div class="arithmatex">\[
+a\ \overbrace{b\ a\ \underset{s_3}{b}\ a\ b}^{d_1[3]=3}\ c
+\]</div>
+<p>字符串 <span class="arithmatex">\(s = \mathtt{cbaabd}\)</span> 以 <span class="arithmatex">\(s[3] = a\)</span> 为中心有两个偶数长度的回文串，也即 <span class="arithmatex">\(d_2[3] = 2\)</span> ：</p>
+<div class="arithmatex">\[
+c\ \overbrace{b\ a\ \underset{s_3}{a}\ b}^{d_2[3]=2}\ d
+\]</div>
+<p>因此关键思路是，如果以某个位置 <span class="arithmatex">\(i\)</span> 为中心，我们有一个长度为 <span class="arithmatex">\(l\)</span> 的回文串，那么我们有以 <span class="arithmatex">\(i\)</span> 为中心的长度为 <span class="arithmatex">\(l - 2\)</span> ， <span class="arithmatex">\(l - 4\)</span> ，等等的回文串。所以 <span class="arithmatex">\(d_1[i]\)</span> 和 <span class="arithmatex">\(d_2[i]\)</span> 两个数组已经足够表示字符串中所有子回文串的信息。</p>
+<p>一个令人惊讶的事实是，存在一个复杂度为线性并且足够简单的算法计算上述两个“回文性质数组” <span class="arithmatex">\(d_1[]\)</span> 和 <span class="arithmatex">\(d_2[]\)</span> 。在这篇文章中我们将详细的描述该算法。</p>
+<h2 id="_3">解法</h2>
+<p>总的来说，该问题具有多种解法：应用字符串哈希，该问题可在 <span class="arithmatex">\(O(n \log n)\)</span> 时间内解决，而使用后缀数组和快速 LCA 该问题可在 <span class="arithmatex">\(O(n)\)</span> 时间内解决。</p>
+<p>但是这里描述的算法 <strong>压倒性</strong> 的简单，并且在时间和空间复杂度上具有更小的常数。该算法由 <strong>Glenn K. Manacher</strong> 在 1975 年提出。</p>
+<h2 id="_4">朴素算法</h2>
+<p>为了避免在之后的叙述中出现歧义，这里我们指出什么是“朴素算法”。</p>
+<p>该算法通过下述方式工作：对每个中心位置 <span class="arithmatex">\(i\)</span> ，在比较一对对应字符后，只要可能，该算法便尝试将答案加 <span class="arithmatex">\(1\)</span> 。</p>
+<p>该算法是比较慢的：它只能在 <span class="arithmatex">\(O(n^2)\)</span> 的时间内计算答案。</p>
+<p>该朴素算法的实现如下：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">d1</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">d2</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="p">{</span>
+    <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span>
+         <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="p">{</span>
+    <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="manacher">Manacher 算法</h2>
+<p>这里我们将只描述算法中寻找所有奇数长度子回文串的情况，即只计算 <span class="arithmatex">\(d_1[]\)</span> ；寻找所有偶数长度子回文串的算法（即计算数组 <span class="arithmatex">\(d_2[]\)</span> ）将只需对奇数情况下的算法进行一些小修改。</p>
+<p>为了快速计算，我们维护已找到的子回文串的最靠右的 <strong>边界 <span class="arithmatex">\((l, r)\)</span> </strong> （即具有最大 <span class="arithmatex">\(r\)</span> 值的回文串）。初始时，我们置 <span class="arithmatex">\(l = 0\)</span> 和 <span class="arithmatex">\(r = -1\)</span> 。</p>
+<p>现在假设我们要对下一个 <span class="arithmatex">\(i\)</span> 计算 <span class="arithmatex">\(d_1[i]\)</span> ，而之前所有 <span class="arithmatex">\(d_1[]\)</span> 中的值已计算完毕。我们将通过下列方式计算：</p>
+<ul>
+<li>
+<p>如果 <span class="arithmatex">\(i\)</span> 位于当前子回文串之外，即 <span class="arithmatex">\(i &gt; r\)</span> ，那么我们调用朴素算法。</p>
+<p>因此我们将连续的增加 <span class="arithmatex">\(d_1[i]\)</span> ，同时在每一步中检查当前的子串 <span class="arithmatex">\([i - d_1[i] \dots i + d_1[i]]\)</span> 是否为一个回文串。如果我们找到了第一处对应字符不同，又或者碰到了 <span class="arithmatex">\(s\)</span> 的边界，则算法停止。在两种情况下我们均已计算完 <span class="arithmatex">\(d_1[i]\)</span> 。此后，仍需记得更新 <span class="arithmatex">\((l, r)\)</span> 。</p>
+</li>
+<li>
+<p>现在考虑 <span class="arithmatex">\(i \le r\)</span> 的情况。我们将尝试从已计算过的 <span class="arithmatex">\(d_1[]\)</span> 的值中获取一些信息。首先在子回文串 <span class="arithmatex">\((l, r)\)</span> 中反转位置 <span class="arithmatex">\(i\)</span> ，即我们得到 <span class="arithmatex">\(j = l + (r - i)\)</span> 。现在来考察值 <span class="arithmatex">\(d_1[j]\)</span> 。因为位置 <span class="arithmatex">\(j\)</span> 同位置 <span class="arithmatex">\(i\)</span> 对称，我们 <strong>几乎总是</strong> 可以置 <span class="arithmatex">\(d_1[i] = d_1[j]\)</span> 。该想法的图示如下（可认为以 <span class="arithmatex">\(j\)</span> 为中心的回文串被“拷贝”至以 <span class="arithmatex">\(i\)</span> 为中心的位置上）：</p>
+<div class="arithmatex">\[
+\ldots\
+\overbrace{
+    s_l\ \ldots\
+    \underbrace{
+        s_{j-d_1[j]+1}\ \ldots\ s_j\ \ldots\ s_{j+d_1[j]-1}
+    }_\text{palindrome}\
+    \ldots\
+    \underbrace{
+        s_{i-d_1[j]+1}\ \ldots\ s_i\ \ldots\ s_{i+d_1[j]-1}
+    }_\text{palindrome}\
+    \ldots\ s_r
+}^\text{palindrome}\
+\ldots
+\]</div>
+<p>然而有一个 <strong>棘手的情况</strong> 需要被正确处理：当“内部”的回文串到达“外部”回文串的边界时，即 <span class="arithmatex">\(j - d_1[j] + 1 \le l\)</span> （或者等价的说， <span class="arithmatex">\(i + d_1[j] - 1 \ge r\)</span> ）。因为在“外部”回文串范围以外的对称性没有保证，因此直接置 <span class="arithmatex">\(d_1[i] = d_1[j]\)</span> 将是不正确的：我们没有足够的信息来断言在位置 <span class="arithmatex">\(i\)</span> 的回文串具有同样的长度。</p>
+<p>实际上，为了正确处理这种情况，我们应该“截断”回文串的长度，即置 <span class="arithmatex">\(d_1[i] = r - i\)</span> 。之后我们将运行朴素算法以尝试尽可能增加 <span class="arithmatex">\(d_1[i]\)</span> 的值。</p>
+<p>该种情况的图示如下（以 <span class="arithmatex">\(j\)</span> 为中心的回文串已经被截断以落在“外部”回文串内）：</p>
+<div class="arithmatex">\[
+\ldots\
+\overbrace{
+    \underbrace{
+        s_l\ \ldots\ s_j\ \ldots\ s_{j+(j-l)}
+    }_\text{palindrome}\
+    \ldots\
+    \underbrace{
+        s_{i-(r-i)}\ \ldots\ s_i\ \ldots\ s_r
+    }_\text{palindrome}
+}^\text{palindrome}\
+\underbrace{
+    \ldots \ldots \ldots \ldots \ldots
+}_\text{try moving here}
+\]</div>
+<p>该图示显示出，尽管以 <span class="arithmatex">\(j\)</span> 为中心的回文串可能更长，以致于超出“外部”回文串，但在位置 <span class="arithmatex">\(i\)</span> ，我们只能利用其完全落在“外部”回文串内的部分。然而位置 <span class="arithmatex">\(i\)</span> 的答案可能比这个值更大，因此接下来我们将运行朴素算法来尝试将其扩展至“外部”回文串之外，也即标识为 "try moving here" 的区域。</p>
+</li>
+</ul>
+<p>最后，仍有必要提醒的是，我们应当记得在计算完每个 <span class="arithmatex">\(d_1[i]\)</span> 后更新值 <span class="arithmatex">\((l, r)\)</span> 。</p>
+<p>同时，再让我们重复一遍：计算偶数长度回文串数组 <span class="arithmatex">\(d_2[]\)</span> 的算法同上述计算奇数长度回文串数组 <span class="arithmatex">\(d_1[]\)</span> 的算法十分类似。</p>
+<h2 id="manacher_1">Manacher 算法的复杂度</h2>
+<p>因为在计算一个特定位置的答案时我们总会运行朴素算法，所以一眼看去该算法的时间复杂度为线性的事实并不显然。</p>
+<p>然而更仔细的分析显示出该算法具有线性复杂度。此处我们需要指出， <a href="z-func.md">计算 Z 函数的算法</a> 和该算法较为类似，并同样具有线性时间复杂度。</p>
+<p>实际上，注意到朴素算法的每次迭代均会使 <span class="arithmatex">\(r\)</span> 增加 <span class="arithmatex">\(1\)</span> ，以及 <span class="arithmatex">\(r\)</span> 在算法运行过程中从不减小。这两个观察告诉我们朴素算法总共会进行 <span class="arithmatex">\(O(n)\)</span> 次迭代。</p>
+<p>Manacher 算法的另一部分显然也是线性的，因此总复杂度为 <span class="arithmatex">\(O(n)\)</span> 。</p>
+<h2 id="manacher_2">Manacher 算法的实现</h2>
+<h3 id="_5">分类讨论</h3>
+<p>为了计算 <span class="arithmatex">\(d_1[]\)</span> ，我们有以下代码：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">d1</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">min</span><span class="p">(</span><span class="n">d1</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span><span class="p">],</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">])</span> <span class="p">{</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">d1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="o">--</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span><span class="p">;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>计算 <span class="arithmatex">\(d_2[]\)</span> 的代码十分类似，但是在算术表达式上有些许不同：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">d2</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">min</span><span class="p">(</span><span class="n">d2</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">])</span> <span class="p">{</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">d2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="o">--</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h3 id="_6">统一处理</h3>
+<p>虽然在讲解过程及上述实现中我们将 <span class="arithmatex">\(d_1[]\)</span> 和 <span class="arithmatex">\(d_2[]\)</span> 的计算分开考虑，但实际上可以通过一个技巧将二者的计算统一为 <span class="arithmatex">\(d_1[]\)</span> 的计算。</p>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，我们在其 <span class="arithmatex">\(n + 1\)</span> 个空中插入分隔符 <span class="arithmatex">\(\#\)</span> ，从而构造一个长度为 <span class="arithmatex">\(2n + 1\)</span> 的字符串 <span class="arithmatex">\(s'\)</span> 。举例来说，对于字符串 <span class="arithmatex">\(s = \mathtt{abababc}\)</span> ，其对应的 <span class="arithmatex">\(s' = \mathtt{\#a\#b\#a\#b\#a\#b\#c\#}\)</span> 。</p>
+<p>对于字母间的 <span class="arithmatex">\(\#\)</span> ，其实际意义为 <span class="arithmatex">\(s\)</span> 中对应的“空”。而两端的 <span class="arithmatex">\(\#\)</span> 则是为了实现的方便。</p>
+<p>注意到，在对 <span class="arithmatex">\(s'\)</span> 计算 <span class="arithmatex">\(d_1[]\)</span> 后，对于一个位置 <span class="arithmatex">\(i\)</span> ， <span class="arithmatex">\(d_1[i]\)</span> 所描述的最长的子回文串必定以 <span class="arithmatex">\(\#\)</span> 结尾（若以字母结尾，由于字母两侧必定各有一个 <span class="arithmatex">\(\#\)</span> ，因此可向外扩展一个得到一个更长的）。因此，对于 <span class="arithmatex">\(s\)</span> 中一个以字母为中心的极大子回文串，设其长度为 <span class="arithmatex">\(m + 1\)</span> ，则其在 <span class="arithmatex">\(s'\)</span> 中对应一个以相应字母为中心，长度为 <span class="arithmatex">\(2m + 3\)</span> 的极大子回文串；而对于 <span class="arithmatex">\(s\)</span> 中一个以空为中心的极大子回文串，设其长度为 <span class="arithmatex">\(m\)</span> ，则其在 <span class="arithmatex">\(s'\)</span> 中对应一个以相应表示空的 <span class="arithmatex">\(\#\)</span> 为中心，长度为 <span class="arithmatex">\(2m + 1\)</span> 的极大子回文串（上述两种情况下的 <span class="arithmatex">\(m\)</span> 均为偶数，但该性质成立与否并不影响结论）。综合以上观察及少许计算后易得，在 <span class="arithmatex">\(s'\)</span> 中， <span class="arithmatex">\(d_1[i]\)</span> 表示在 <span class="arithmatex">\(s​\)</span> 中以对应位置为中心的极大子回文串的 <strong>总长度加一</strong> 。</p>
+<p>上述结论建立了 <span class="arithmatex">\(s'\)</span> 的 <span class="arithmatex">\(d_1[]\)</span> 同 <span class="arithmatex">\(s\)</span> 的 <span class="arithmatex">\(d_1[]\)</span> 和 <span class="arithmatex">\(d_2[]\)</span> 间的关系。</p>
+<p>由于该统一处理本质上即求 <span class="arithmatex">\(s'\)</span> 的 <span class="arithmatex">\(d_1[]\)</span> ，因此在得到 <span class="arithmatex">\(s'\)</span> 后，代码同上节计算 <span class="arithmatex">\(d_1[]\)</span> 的一样。</p>
+<h2 id="_7">练习题目</h2>
+<ul>
+<li><a href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=2470">UVA #11475 "Extend to Palindrome"</a> </li>
+<li><a href="https://www.luogu.org/problemnew/show/P4555">「国家集训队」最长双回文串</a> </li>
+</ul>
+<hr>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/palindromes_count">Нахождение всех подпалиндромов</a> 与其英文翻译版 <a href="https://cp-algorithms.com/string/manacher.html">Finding all sub-palindromes in <span class="arithmatex">\(O(N)\)</span> </a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+</div>
+
+</body>
+</html>

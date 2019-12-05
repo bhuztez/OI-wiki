@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Scheduling jobs on one machine
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Scheduling jobs on one machine
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/schedule_one_machine.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/schedule_one_machine.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">特殊的代价函数</a></li>
+<li><a href="#livshits-kladov">Livshits-Kladov 定理</a></li>
+</ul>
+</aside>
+
+
+<p>你有 <span class="arithmatex">\(n\)</span> 个任务，要求你找到一个代价最小的的顺序执行他们。第 <span class="arithmatex">\(i\)</span> 个任务花费的时间是 <span class="arithmatex">\(t_i\)</span> ，而第 <span class="arithmatex">\(i\)</span> 个任务等待 <span class="arithmatex">\(t\)</span> 的时间会花费 <span class="arithmatex">\(f_i(t)\)</span> 的代价。</p>
+<p>形式化地说，给出 <span class="arithmatex">\(n\)</span> 个函数 <span class="arithmatex">\(f_i\)</span> 和 <span class="arithmatex">\(n\)</span> 个数 <span class="arithmatex">\(t_i\)</span> ，求一个排列 <span class="arithmatex">\(p\)</span> ，最小化</p>
+<div class="arithmatex">\[
+F(p)=\sum_{i=1}^nf_{p_i}\left(\sum_{j=1}^{i-1}t_{p_j}\right)
+\]</div>
+<h2 id="_1">特殊的代价函数</h2>
+<h3 id="_2">线性代价函数</h3>
+<p>首先我们考虑所有的函数是线性的函数，即 <span class="arithmatex">\(f_i(x)=c_ix+d_i\)</span> ，其中 <span class="arithmatex">\(c_i\)</span> 是非负整数。显然我们可以事先把常数项加起来，因此函数就转化为了 <span class="arithmatex">\(f_i(x)=c_ix\)</span> 的形式。</p>
+<p>考虑两个排列 <span class="arithmatex">\(p\)</span> 和 <span class="arithmatex">\(p'\)</span> ，其中 <span class="arithmatex">\(p'\)</span> 是把 <span class="arithmatex">\(p\)</span> 的第 <span class="arithmatex">\(i\)</span> 个位置上的数和 <span class="arithmatex">\(i+1\)</span> 个位置上的数交换得到的排列。则</p>
+<div class="arithmatex">\[
+\begin{split}
+F(p')-F(p)&amp;=c_{p'_i}\sum_{j=1}^{i-1}t_{p'_j}+c_{p'_{i+1}}\sum_{j=1}^{i}t_{p'_j}
+-\left(c_{p_i}\sum_{j=1}^{i-1}t_{p_j}+c_{p_{i+1}}\sum_{j=1}^{i}t_{p_j}\right)\\
+&amp;=c_{p_i}t_{p_{i+1}}-c_{p_{i+1}}t_{p_i}
+\end{split}
+\]</div>
+<p>于是我们使用如果 <span class="arithmatex">\(c_{p_i}t_{p_{i+1}}-c_{p_{i+1}}t_{p_i}&gt;0\)</span> 就交换的策略做一下排序就可以了。写成 <span class="arithmatex">\(\dfrac{c_{p_i}}{t_{p_i}}&gt;\dfrac{c_{p_{i+1}}}{t_{p_{i+1}}}\)</span> 的形式，就可以理解为将排列按 <span class="arithmatex">\(\dfrac{c_i}{t_i}\)</span> 升序排序。</p>
+<p>处理这个问题，我们的思路是考虑微扰后的变换情况，贪心地选取最优解。</p>
+<h3 id="_3">指数代价函数</h3>
+<p>考虑代价函数的形式为 <span class="arithmatex">\(f_i(x)=c_ie^{ax}\)</span> ，其中 <span class="arithmatex">\(c_i\ge 0,a&gt;0\)</span> 。</p>
+<p>我们沿用之前的思路，考虑将 <span class="arithmatex">\(i\)</span> 和 <span class="arithmatex">\(i+1\)</span> 的位置上的数交换引起的代价变化。最终得到的算法是将排列按照 <span class="arithmatex">\(\dfrac{1-e^{at_i}}{c_i}\)</span> 升序排序。</p>
+<h3 id="_4">相同的单增函数</h3>
+<p>我们考虑所有的 <span class="arithmatex">\(f_i(x)\)</span> 是同一个单增函数。那么显然我们将排列按照 <span class="arithmatex">\(t_i\)</span> 升序排序即可。</p>
+<h2 id="livshits-kladov">Livshits-Kladov 定理</h2>
+<p>Livshits-Kladov 定理成立，当且仅当代价函数是以下三种情况：</p>
+<ul>
+<li>线性函数： <span class="arithmatex">\(f_i(t) = c_it + d_i\)</span> ，其中 <span class="arithmatex">\(c_i\ge 0\)</span> ；</li>
+<li>指数函数： <span class="arithmatex">\(f_i(t) = c_i e^{a t} + d_i\)</span> ，其中 <span class="arithmatex">\(c_i,a&gt;0\)</span> ；</li>
+<li>相同的单增函数： <span class="arithmatex">\(f_i(t) = \phi(t)\)</span> ，其中 <span class="arithmatex">\(\phi(t)\)</span> 是一个单增函数。</li>
+</ul>
+<p>定理是在假设代价函数足够平滑（存在三阶导数）的条件下证明的。在这三种情况下，问题的最优解可以通过简单的排序在 <span class="arithmatex">\(O(n\log n)\)</span> 的时间内解决。</p>
+<hr>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/johnson_problem_1">Задача Джонсона с одним станком</a> 与其英文翻译版 <a href="https://cp-algorithms.com/schedules/schedule_one_machine.html">Scheduling jobs on one machine</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+</div>
+
+</body>
+</html>

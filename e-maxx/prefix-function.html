@@ -1,0 +1,351 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Prefix function
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Prefix function
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/prefix-function.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/prefix-function.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">前缀函数定义</a></li>
+<li><a href="#_2">朴素算法</a></li>
+<li><a href="#_3">高效算法</a></li>
+<li><a href="#_8">应用</a></li>
+<li><a href="#_13">练习题目</a></li>
+</ul>
+</aside>
+
+
+<h2 id="_1">前缀函数定义</h2>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，其 <strong>前缀函数</strong> 被定义为一个长度为 <span class="arithmatex">\(n\)</span> 的数组 <span class="arithmatex">\(\pi\)</span> 。其中 <span class="arithmatex">\(\pi[i]\)</span> 为既是子串 <span class="arithmatex">\(s[0\dots i]\)</span> 的前缀同时也是该子串的后缀的最长真前缀（proper prefix）长度。一个字符串的真前缀是其前缀但不等于该字符串自身。根据定义， <span class="arithmatex">\(\pi[0] = 0\)</span> 。</p>
+<p>前缀函数的定义可用数学语言描述如下：</p>
+<div class="arithmatex">\[
+\pi[i] = \max_{k = 0 \dots i}\{k: s[0 \dots k - 1] = s[i - (k - 1) \dots i]\}
+\]</div>
+<p>举例来说，字符串 <code>abcabcd</code> 的前缀函数为 <span class="arithmatex">\([0, 0, 0, 1, 2, 3, 0]\)</span> ，字符串 <code>aabaaab</code> 的前缀函数为 <span class="arithmatex">\([0, 1, 0, 1, 2, 2, 3]\)</span> 。</p>
+<h2 id="_2">朴素算法</h2>
+<p>一个直接按照定义计算前缀函数的算法如下：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">prefix_function</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">s</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pi</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="n">pi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">pi</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>显见该算法的时间复杂度为 <span class="arithmatex">\(O(n^3)\)</span> ，具有很大的改进空间。</p>
+<h2 id="_3">高效算法</h2>
+<p>该算法由 Knuth 和 Pratt 在 1977 年提出，同年 Morris 也独立的提出该算法。该算法被用作一个子串搜索算法的核心函数。</p>
+<h3 id="_4">第一个优化</h3>
+<p>第一个重要的观察是相邻的前缀函数值至多增加 <span class="arithmatex">\(1\)</span> 。</p>
+<p>实际上，如不然，即 <span class="arithmatex">\(\pi[i + 1] &gt; \pi[i] + 1\)</span> ，考察长度为 <span class="arithmatex">\(\pi[i + 1]\)</span> 的 <span class="arithmatex">\(s[0 \dots i + 1]\)</span> 的后缀可引出矛盾。该后缀去掉最后一个字符后，我们得到一个长度为 <span class="arithmatex">\(\pi[i + 1] - 1\)</span> 的 <span class="arithmatex">\(s[0 \dots i]\)</span> 的后缀。该后缀比 <span class="arithmatex">\(\pi[i]\)</span> 描述的后缀更优，同其定义矛盾。</p>
+<p>下述图例展示了这个矛盾。假定位于位置 <span class="arithmatex">\(i\)</span> 和 <span class="arithmatex">\(i + 1\)</span> 的既是后缀同时也是前缀的最长真后缀的长度分别为 <span class="arithmatex">\(2\)</span> 和 <span class="arithmatex">\(4\)</span> 。则字符串 <span class="arithmatex">\(s_0 s_1 s_2 s_3\)</span> 与字符串 <span class="arithmatex">\(s_{i - 2} s_{i - 1} s_i s_{i + 1}\)</span> 相同，这意味着 <span class="arithmatex">\(s_0 s_1 s_2\)</span> 与字符串 <span class="arithmatex">\(s_{i - 2} s_{i - 1} s_i\)</span> 相同，因此 <span class="arithmatex">\(\pi[i]\)</span> 至少为 <span class="arithmatex">\(3\)</span> 。</p>
+<div class="arithmatex">\[
+\underbrace{\overbrace{s_0 ~ s_1}^{\pi[i] = 2} ~ s_2 ~ s_3}_{\pi[i+1] = 4} ~ \dots ~ \underbrace{s_{i-2} ~ \overbrace{s_{i-1} ~ s_{i}}^{\pi[i] = 2} ~ s_{i+1}}_{\pi[i+1] = 4}
+\]</div>
+<p>所以当移动到下一个位置时，前缀函数的值要么增加一，要么维持不变，要么减少。实际上，该事实已经允许我们将算法时间复杂度减少至 <span class="arithmatex">\(O(n^2)\)</span> 。因为每步中前缀函数至多增加 <span class="arithmatex">\(1\)</span> ，因此在总的运行过程中，前缀函数至多增加 <span class="arithmatex">\(n\)</span> ，同时也至多减小 <span class="arithmatex">\(n\)</span> 。这意味着我们仅需要进行 <span class="arithmatex">\(O(n)\)</span> 次字符串比较，所以总复杂度为 <span class="arithmatex">\(O(n^2)\)</span> 。</p>
+<h3 id="_5">第二个优化</h3>
+<p>让我们走的更远一点：尝试摆脱掉字符串比较。为了达成这一点，我们必须用到先前计算的所有信息。</p>
+<p>现在考虑计算位置 <span class="arithmatex">\(i + 1\)</span> 的前缀函数 <span class="arithmatex">\(\pi\)</span> 的值。如果 <span class="arithmatex">\(s[i + 1] = s[\pi[i]]\)</span> ，那么我们可以断言 <span class="arithmatex">\(\pi[i + 1] = \pi[i] + 1\)</span> ，因为我们已经知道位于位置 <span class="arithmatex">\(i\)</span> 的长度为 <span class="arithmatex">\(\pi[i]\)</span> 的后缀同长度为 <span class="arithmatex">\(\pi[i]\)</span> 的前缀相等。参照下述图例：</p>
+<div class="arithmatex">\[
+\underbrace{\overbrace{s_0 ~ s_1 ~ s_2}^{\pi[i]} ~ \overbrace{s_3}^{s_3 = s_{i+1}}}_{\pi[i+1] = \pi[i] + 1} ~ \dots ~ \underbrace{\overbrace{s_{i-2} ~ s_{i-1} ~ s_{i}}^{\pi[i]} ~ \overbrace{s_{i+1}}^{s_3 = s_i + 1}}_{\pi[i+1] = \pi[i] + 1}
+\]</div>
+<p>如果不是上述情况，即 <span class="arithmatex">\(s[i + 1] \neq s[\pi[i]]\)</span> ，那么我们需要尝试更短的字符串。为了加速，我们希望直接移动到最长的长度 <span class="arithmatex">\(j &lt; \pi[i]\)</span> ，使得在位置 <span class="arithmatex">\(i\)</span> 的前缀性质仍得以保持，也即 <span class="arithmatex">\(s[0 \dots j - 1] = s[i - j + 1 \dots i]\)</span> ：</p>
+<div class="arithmatex">\[
+\overbrace{\underbrace{s_0 ~ s_1}_j ~ s_2 ~ s_3}^{\pi[i]} ~ \dots ~ \overbrace{s_{i-3} ~ s_{i-2} ~ \underbrace{s_{i-1} ~ s_{i}}_j}^{\pi[i]} ~ s_{i+1}
+\]</div>
+<p>实际上，如果我们找到了这样的长度 <span class="arithmatex">\(j\)</span> ，那么我们仅需要再次比较 <span class="arithmatex">\(s[i + 1]\)</span> 和 <span class="arithmatex">\(s[j]\)</span> 。如果他们相等，那么我们置 <span class="arithmatex">\(\pi[i + 1] = j + 1\)</span> 。否则，我们需要找到小于 <span class="arithmatex">\(j\)</span> 的最大值使得前缀性质得以保持，如此反复。这个过程会一直持续，直到 <span class="arithmatex">\(j = 0\)</span> 。如果 <span class="arithmatex">\(s[i + 1] = s[0]\)</span> ，那么我们置 <span class="arithmatex">\(\pi[i + 1] = 1\)</span> ，否则 <span class="arithmatex">\(\pi[i + 1] = 0\)</span> 。</p>
+<p>所以我们已经有了这个算法的一个大概雏形。现在仅剩的问题是对于 <span class="arithmatex">\(j\)</span> ，如何快速找到这样的长度。让我们重新叙述一遍：对于当前在位置 <span class="arithmatex">\(i\)</span> 使得前缀性质得以保持的长度 <span class="arithmatex">\(j\)</span> ，也即 <span class="arithmatex">\(s[0 \dots j - 1] = s[i - j + 1 \dots i]\)</span> ，我们希望找到最大的 <span class="arithmatex">\(k &lt; j\)</span> ，使得前缀性质仍得以保持。</p>
+<div class="arithmatex">\[
+\overbrace{\underbrace{s_0 ~ s_1}_k ~ s_2 ~ s_3}^j ~ \dots ~ \overbrace{s_{i-3} ~ s_{i-2} ~ \underbrace{s_{i-1} ~ s_{i}}_k}^j ~s_{i+1}
+\]</div>
+<p>上图显示出 <span class="arithmatex">\(k\)</span> 必定为 <span class="arithmatex">\(\pi[j - 1]\)</span> ，而该值我们之前已经计算过了。</p>
+<h3 id="_6">最终算法</h3>
+<p>所以最终我们可以构建一个不需要进行任何字符串比较，并且只进行 <span class="arithmatex">\(O(n)\)</span> 次操作的算法。</p>
+<p>以下是最终的流程：</p>
+<ul>
+<li>在一个循环中以 <span class="arithmatex">\(i = 1\)</span> 到 <span class="arithmatex">\(i = n - 1\)</span> 的顺序计算前缀函数 <span class="arithmatex">\(\pi[i]\)</span> 的值（ <span class="arithmatex">\(\pi[0]\)</span> 被赋值为 <span class="arithmatex">\(0\)</span> ）。</li>
+<li>为了计算当前的前缀函数值 <span class="arithmatex">\(\pi[i]\)</span> ，我们令变量 <span class="arithmatex">\(j\)</span> 表示右端点位于 <span class="arithmatex">\(i - 1\)</span> 的最好的后缀的长度。初始时 <span class="arithmatex">\(j = \pi[i - 1]\)</span> 。</li>
+<li>通过比较 <span class="arithmatex">\(s[j]\)</span> 和 <span class="arithmatex">\(s[i]\)</span> 来检查长度为 <span class="arithmatex">\(j + 1\)</span> 的后缀是否同时也是一个前缀。如果二者相等，那么我们置 <span class="arithmatex">\(\pi[i] = j + 1\)</span> ，否则我们减少 <span class="arithmatex">\(j\)</span> 至 <span class="arithmatex">\(\pi[j - 1]\)</span> 并且重复该过程。</li>
+<li>如果 <span class="arithmatex">\(j = 0\)</span> 并且仍没有任何一次匹配，则置 <span class="arithmatex">\(\pi[i] = 0\)</span> 并移至下一个下标 <span class="arithmatex">\(i + 1\)</span> 。</li>
+</ul>
+<h3 id="_7">实现</h3>
+<p>该算法的实现出人意料的短且直观。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">prefix_function</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">s</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pi</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">pi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">pi</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>这是一个 <strong>在线</strong> 算法，即其当数据到达时处理它——举例来说，你可以一个字符一个字符的读取字符串，立即处理它们以计算出每个字符的前缀函数值。该算法仍然需要存储字符串本身以及先前计算过的前缀函数值，但如果我们已经预先知道该字符串前缀函数的最大可能取值 <span class="arithmatex">\(M\)</span> ，那么我们仅需要存储该字符串的前 <span class="arithmatex">\(M + 1\)</span> 个字符以及对应的前缀函数值。</p>
+<h2 id="_8">应用</h2>
+<h3 id="knuth-morris-pratt">在字符串中查找子串：Knuth-Morris-Pratt 算法</h3>
+<p>该任务是前缀函数的一个典型应用。</p>
+<p>给定一个文本 <span class="arithmatex">\(t\)</span> 和一个字符串 <span class="arithmatex">\(s\)</span> ，我们尝试找到并展示 <span class="arithmatex">\(s\)</span> 在 <span class="arithmatex">\(t\)</span> 中的所有出现（occurrence）。</p>
+<p>为了简便起见，我们用 <span class="arithmatex">\(n\)</span> 表示字符串 <span class="arithmatex">\(s\)</span> 的长度，用 <span class="arithmatex">\(m\)</span> 表示文本 <span class="arithmatex">\(t\)</span> 的长度。</p>
+<p>我们构造一个字符串 <span class="arithmatex">\(s + \# + t\)</span> ，其中 <span class="arithmatex">\(\#\)</span> 为一个既不出现在 <span class="arithmatex">\(s\)</span> 中也不出现在 <span class="arithmatex">\(t\)</span> 中的分隔符。接下来计算该字符串的前缀函数。现在考虑该前缀函数除去最开始 <span class="arithmatex">\(n + 1\)</span> 个值（即属于字符串 <span class="arithmatex">\(s\)</span> 和分隔符的函数值）后其余函数值的意义。根据定义， <span class="arithmatex">\(\pi[i]\)</span> 为右端点在 <span class="arithmatex">\(i\)</span> 且同时为一个前缀的最长真子串的长度，具体到我们的这种情况下，其值为与 <span class="arithmatex">\(s\)</span> 的前缀相同且右端点位于 <span class="arithmatex">\(i\)</span> 的最长子串的长度。由于分隔符的存在，该长度不可能超过 <span class="arithmatex">\(n\)</span> 。而如果等式 <span class="arithmatex">\(\pi[i] = n\)</span> 成立，则意味着 <span class="arithmatex">\(s\)</span> 完整出现在该位置（即其右端点位于位置 <span class="arithmatex">\(i\)</span> ）。注意该位置的下标是对字符串 <span class="arithmatex">\(s + \# + t\)</span> 而言的。</p>
+<p>因此如果在某一位置 <span class="arithmatex">\(i\)</span> 有 <span class="arithmatex">\(\pi[i] = n\)</span> 成立，则字符串 <span class="arithmatex">\(s\)</span> 在字符串 <span class="arithmatex">\(t\)</span> 的 <span class="arithmatex">\(i - (n - 1) - (n + 1) = i - 2n\)</span> 处出现。</p>
+<p>正如在前缀函数的计算中已经提到的那样，如果我们知道前缀函数的值永远不超过一特定值，那么我们不需要存储整个字符串以及整个前缀函数，而只需要二者开头的一部分。在我们这种情况下这意味着只需要存储字符串 <span class="arithmatex">\(s + \#\)</span> 以及相应的前缀函数值即可。我们可以一次读入字符串 <span class="arithmatex">\(t\)</span> 的一个字符并计算当前位置的前缀函数值。</p>
+<p>因此 Knuth-Morris-Pratt 算法（简称 KMP 算法）用 <span class="arithmatex">\(O(n + m)\)</span> 的时间以及 <span class="arithmatex">\(O(n)\)</span> 的内存解决了该问题。</p>
+<h3 id="_9">统计每个前缀的出现次数</h3>
+<p>在该节我们将同时讨论两个问题。给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，在问题的第一个变种中我们希望统计每个前缀 <span class="arithmatex">\(s[0 \dots i]\)</span> 在同一个字符串的出现次数，在问题的第二个变种中我们希望统计每个前缀 <span class="arithmatex">\(s[0 \dots i]\)</span> 在另一个给定字符串 <span class="arithmatex">\(t\)</span> 中的出现次数。</p>
+<p>首先让我们来解决第一个问题。考虑位置 <span class="arithmatex">\(i\)</span> 的前缀函数值 <span class="arithmatex">\(\pi[i]\)</span> 。根据定义，其意味着字符串 <span class="arithmatex">\(s\)</span> 一个长度为 <span class="arithmatex">\(\pi[i]\)</span> 的前缀在位置 <span class="arithmatex">\(i\)</span> 出现并以 <span class="arithmatex">\(i\)</span> 为右端点，同时不存在一个更长的前缀满足前述定义。与此同时，更短的前缀可能以该位置为右端点。容易看出，我们遇到了在计算前缀函数时已经回答过的问题：给定一个长度为 <span class="arithmatex">\(j\)</span> 的前缀，同时其也是一个右端点位于 <span class="arithmatex">\(i\)</span> 的后缀，下一个更小的前缀长度 <span class="arithmatex">\(k &lt; j\)</span> 是多少？该长度的前缀需同时也是一个右端点为 <span class="arithmatex">\(i\)</span> 的后缀。因此以位置 <span class="arithmatex">\(i\)</span> 为右端点，有长度为 <span class="arithmatex">\(\pi[i]\)</span> 的前缀，有长度为 <span class="arithmatex">\(\pi[\pi[i] - 1]\)</span> 的前缀，有长度为 <span class="arithmatex">\(\pi[\pi[\pi[i] - 1] - 1]\)</span> 的前缀，等等，直到长度变为 <span class="arithmatex">\(0\)</span> 。故而我们可以通过下述方式计算答案。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">ans</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">ans</span><span class="p">[</span><span class="n">pi</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">++</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="n">ans</span><span class="p">[</span><span class="n">pi</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+</pre></div>
+</td></tr></table>
+
+<p>在上述代码中我们首先统计每个前缀函数值在数组 <span class="arithmatex">\(\pi\)</span> 中出现了多少次，然后再计算最后答案：如果我们知道长度为 <span class="arithmatex">\(i\)</span> 的前缀出现了恰好 <span class="arithmatex">\(\text{ans}[i]\)</span> 次，那么该值必须被叠加至其最长的既是后缀也是前缀的子串的出现次数中。在最后，为了统计原始的前缀，我们对每个结果加 <span class="arithmatex">\(1\)</span> 。</p>
+<p>现在考虑第二个问题。我们应用来自 Knuth-Morris-Pratt 的技巧：构造一个字符串 <span class="arithmatex">\(s + \# + t\)</span> 并计算其前缀函数。与第一个问题唯一的不同之处在于，我们只关心与字符串 <span class="arithmatex">\(t\)</span> 相关的前缀函数值，即 <span class="arithmatex">\(i \ge n + 1\)</span> 的 <span class="arithmatex">\(\pi[i]\)</span> 。有了这些值之后，我们可以同样应用在第一个问题中的算法来解决该问题。</p>
+<h3 id="_10">一个字符串中本质不同子串的数目</h3>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，我们希望计算其本质不同子串的数目。</p>
+<p>我们将迭代的解决该问题。换句话说，在知道了当前的本质不同子串的数目的情况下，我们要找出一种在 <span class="arithmatex">\(s\)</span> 末尾添加一个字符后重新计算该数目的方法。</p>
+<p>令 <span class="arithmatex">\(k\)</span> 为当前 <span class="arithmatex">\(s\)</span> 的本质不同子串数量。我们添加一个新的字符 <span class="arithmatex">\(c\)</span> 至 <span class="arithmatex">\(s\)</span> 。显然，会有一些新的子串以字符 <span class="arithmatex">\(c\)</span> 结尾。我们希望对这些以该字符结尾且我们之前未曾遇到的子串计数。</p>
+<p>构造字符串 <span class="arithmatex">\(t = s + c\)</span> 并将其反转得到字符串 <span class="arithmatex">\(t^{\sim}\)</span> 。现在我们的任务变为计算有多少 <span class="arithmatex">\(t^{\sim}\)</span> 的前缀未在 <span class="arithmatex">\(t^{\sim}\)</span> 的其余任何地方出现。如果我们计算了 <span class="arithmatex">\(t^{\sim}\)</span> 的前缀函数最大值 <span class="arithmatex">\(\pi_{\max}\)</span> ，那么最长的出现在 <span class="arithmatex">\(s\)</span> 中的前缀其长度为 <span class="arithmatex">\(\pi_{\max}\)</span> 。自然的，所有更短的前缀也出现了。</p>
+<p>因此，当添加了一个新字符后新出现的子串数目为 <span class="arithmatex">\(|s| + 1 - \pi_{\max}\)</span> 。</p>
+<p>所以对于每个添加的字符，我们可以在 <span class="arithmatex">\(O(n)\)</span> 的时间内计算新子串的数目，故最终复杂度为 <span class="arithmatex">\(O(n^2)\)</span> 。</p>
+<p>值得注意的是，我们也可以重新计算在头部添加一个字符，或者从尾或者头移除一个字符时的本质不同子串数目。</p>
+<h3 id="_11">字符串压缩</h3>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，我们希望找到其最短的“压缩”表示，也即我们希望寻找一个最短的字符串 <span class="arithmatex">\(t\)</span> ，使得 <span class="arithmatex">\(s\)</span> 可以被 <span class="arithmatex">\(t\)</span> 的一份或多份拷贝的拼接表示。</p>
+<p>显然，我们只需要找到 <span class="arithmatex">\(t\)</span> 的长度即可。知道了该长度，该问题的答案即为长度为该值的 <span class="arithmatex">\(s\)</span> 的前缀。</p>
+<p>让我们计算 <span class="arithmatex">\(s\)</span> 的前缀函数。通过使用该函数的最后一个值 <span class="arithmatex">\(\pi[n - 1]\)</span> ，我们定义值 <span class="arithmatex">\(k = n - \pi[n - 1]\)</span> 。我们将证明，如果 <span class="arithmatex">\(k\)</span> 整除 <span class="arithmatex">\(n\)</span> ，那么 <span class="arithmatex">\(k\)</span> 就是答案，否则不存在一个有效的压缩，故答案为 <span class="arithmatex">\(n\)</span> 。</p>
+<p>假定 <span class="arithmatex">\(n\)</span> 可被 <span class="arithmatex">\(k\)</span> 整除。那么字符串可被划分为长度为 <span class="arithmatex">\(k\)</span> 的若干块。根据前缀函数的定义，该字符串长度为 <span class="arithmatex">\(n - k\)</span> 的前缀等于其后缀。但是这意味着最后一个块同倒数第二个块相等，并且倒数第二个块同倒数第三个块相等，等等。作为其结果，所有块都是相等的，因此我们可以将字符串 <span class="arithmatex">\(s\)</span> 压缩至长度 <span class="arithmatex">\(k\)</span> 。</p>
+<p>诚然，我们仍需证明该值为最优解。实际上，如果有一个比 <span class="arithmatex">\(k\)</span> 更小的压缩表示，那么前缀函数的最后一个值 <span class="arithmatex">\(\pi[n - 1]\)</span> 必定比 <span class="arithmatex">\(n - k\)</span> 要大。因此 <span class="arithmatex">\(k\)</span> 就是答案。</p>
+<p>现在假设 <span class="arithmatex">\(n\)</span> 不可以被 <span class="arithmatex">\(k\)</span> 整除，我们将通过反证法证明这意味着答案为 <span class="arithmatex">\(n\)</span> <a href="在俄文版及英文版中该部分证明均疑似有误。本文章中的该部分证明由作者自行添加。">^1</a>。假设其最小压缩表示 <span class="arithmatex">\(r\)</span> 的长度为 <span class="arithmatex">\(p\)</span> （ <span class="arithmatex">\(p\)</span> 整除 <span class="arithmatex">\(n\)</span> ），字符串 <span class="arithmatex">\(s\)</span> 被划分为 <span class="arithmatex">\(n / p \ge 2\)</span> 块。那么前缀函数的最后一个值 <span class="arithmatex">\(\pi[n - 1]\)</span> 必定大于 <span class="arithmatex">\(n - p\)</span> （如果等于则 <span class="arithmatex">\(n\)</span> 可被 <span class="arithmatex">\(k\)</span> 整除），也即其所表示的后缀将部分的覆盖第一个块。现在考虑字符串的第二个块。该块有两种解释：第一种为 <span class="arithmatex">\(r_0 r_1 \dots r_{p - 1}\)</span> ，另一种为 <span class="arithmatex">\(r_{p - k} r_{p - k + 1} \dots r_{p - 1} r_0 r_1 \dots r_{p - k - 1}\)</span> 。由于两种解释对应同一个字符串，因此可得到 <span class="arithmatex">\(p\)</span> 个方程组成的方程组，该方程组可简写为 <span class="arithmatex">\(r_{(i + k) \bmod p} = r_{i \bmod p}\)</span> ，其中 <span class="arithmatex">\(\cdot \bmod p\)</span> 表示模 <span class="arithmatex">\(p\)</span> 意义下的最小非负剩余。</p>
+<div class="arithmatex">\[
+\begin{gathered}
+\overbrace{r_0 ~ r_1 ~ r_2 ~ r_3 ~ r_4 ~ r_5}^p ~ \overbrace{r_0 ~ r_1 ~ r_2 ~ r_3 ~ r_4 r_5}^p \\
+r_0 ~ r_1 ~ r_2 ~ r_3 ~ \underbrace{\overbrace{r_0 ~ r_1 ~ r_2 ~ r_3 ~ r_4 ~ r_5}^p ~ r_0 ~ r_1}_{\pi[11] = 8}
+\end{gathered}
+\]</div>
+<p>根据扩展欧几里得算法我们可以得到一组 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(y\)</span> 使得 <span class="arithmatex">\(xk + yp = \gcd(k, p)\)</span> 。通过与等式 <span class="arithmatex">\(pk - kp = 0\)</span> 适当叠加我们可以得到一组 <span class="arithmatex">\(x' &gt; 0\)</span> 和 <span class="arithmatex">\(y' &lt; 0\)</span> 使得 <span class="arithmatex">\(x'k + y'p = \gcd(k, p)\)</span> 。这意味着通过不断应用前述方程组中的方程我们可以得到新的方程组 <span class="arithmatex">\(r_{(i + \gcd(k, p)) \bmod p} = r_{i \bmod p}\)</span> 。</p>
+<p>由于 <span class="arithmatex">\(\gcd(k, p)\)</span> 整除 <span class="arithmatex">\(p\)</span> ，这意味着 <span class="arithmatex">\(\gcd(k, p)\)</span> 是 <span class="arithmatex">\(r\)</span> 的一个周期。又因为 <span class="arithmatex">\(\pi[n - 1] &gt; n - p\)</span> ，故有 <span class="arithmatex">\(n - \pi[n - 1] = k &lt; p\)</span> ，所以 <span class="arithmatex">\(\gcd(k, p)\)</span> 是一个比 <span class="arithmatex">\(p\)</span> 更小的 <span class="arithmatex">\(r\)</span> 的周期。因此字符串 <span class="arithmatex">\(s\)</span> 有一个长度为 <span class="arithmatex">\(\gcd(k, p) &lt; p\)</span> 的压缩表示，同 <span class="arithmatex">\(p\)</span> 的最小性矛盾。</p>
+<p>综上所述，不存在一个长度小于 <span class="arithmatex">\(n\)</span> 的压缩表示，因此答案为 <span class="arithmatex">\(n\)</span> 。</p>
+<h3 id="_12">根据前缀函数构建一个自动机</h3>
+<p>让我们重新回到通过一个分隔符将两个字符串拼接的新字符串。对于字符串 <span class="arithmatex">\(s\)</span> 和 <span class="arithmatex">\(t\)</span> 我们计算 <span class="arithmatex">\(s + \# + t\)</span> 的前缀函数。显然，因为 <span class="arithmatex">\(\#\)</span> 是一个分隔符，前缀函数值永远不会超过 <span class="arithmatex">\(|s|\)</span> 。因此我们只需要存储字符串 <span class="arithmatex">\(s + \#\)</span> 和其对应的前缀函数值，之后就可以动态计算对于之后所有字符的前缀函数值：</p>
+<div class="arithmatex">\[
+\underbrace{s_0 ~ s_1 ~ \dots ~ s_{n-1} ~ \#}_{\text{need to store}} ~ \underbrace{t_0 ~ t_1 ~ \dots ~ t_{m-1}}_{\text{do not need to store}}
+\]</div>
+<p>实际上在这种情况下，知道 <span class="arithmatex">\(t\)</span> 的下一个字符 <span class="arithmatex">\(c\)</span> 以及之前位置的前缀函数值便足以计算下一个位置的前缀函数值，而不需要用到任何其它 <span class="arithmatex">\(t\)</span> 的字符和对应的前缀函数值。</p>
+<p>换句话说，我们可以构造一个 <strong>自动机</strong> （一个有限状态机）：其状态为当前的前缀函数值，而从一个状态到另一个状态的转移则由下一个字符确定。</p>
+<p>因此，即使没有字符串 <span class="arithmatex">\(t\)</span> ，我们同样可以应用构造转移表的算法构造一个转移表 <span class="arithmatex">\(( \text { old } \pi , c ) \rightarrow \text { new } _ { - } \pi\)</span> ：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="nf">compute_automaton</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&amp;</span> <span class="n">aut</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">s</span> <span class="o">+=</span> <span class="sc">&#39;#&#39;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">prefix_function</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+  <span class="n">aut</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">26</span><span class="p">));</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+      <span class="k">if</span> <span class="p">(</span><span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="n">c</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+      <span class="n">aut</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>然而在这种形式下，对于小写字母表，算法的时间复杂度为 <span class="arithmatex">\(O(|\Sigma|n^2)\)</span> 。注意到我们可以应用动态规划来利用表中已计算过的部分。只要我们从值 <span class="arithmatex">\(j\)</span> 变化到 <span class="arithmatex">\(\pi[j - 1]\)</span> ，那么我们实际上在说转移 <span class="arithmatex">\((j, c)\)</span> 所到达的状态同转移 <span class="arithmatex">\((\pi[j - 1], c)\)</span> 一样，但该答案我们之前已经精确计算过了。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="nf">compute_automaton</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&amp;</span> <span class="n">aut</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">s</span> <span class="o">+=</span> <span class="sc">&#39;#&#39;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">prefix_function</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+  <span class="n">aut</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">26</span><span class="p">));</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">aut</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">aut</span><span class="p">[</span><span class="n">pi</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]][</span><span class="n">c</span><span class="p">];</span>
+      <span class="k">else</span>
+        <span class="n">aut</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="n">c</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>最终我们可在 <span class="arithmatex">\(O(|\Sigma|n)\)</span> 的时间复杂度内构造该自动机。</p>
+<p>该自动机在什么时候有用呢？首先，记得大部分时候我们为了一个目的使用字符串 <span class="arithmatex">\(s + \# + t\)</span> 的前缀函数：寻找字符串 <span class="arithmatex">\(s\)</span> 在字符串 <span class="arithmatex">\(t\)</span> 中的所有出现。</p>
+<p>因此使用该自动机的最直接的好处是 <strong>加速计算字符串 <span class="arithmatex">\(s + \# + t\)</span> 的前缀函数</strong> 。</p>
+<p>通过构建 <span class="arithmatex">\(s + \#\)</span> 的自动机，我们不再需要存储字符串 <span class="arithmatex">\(s\)</span> 以及其对应的前缀函数值。所有转移已经在表中计算过了。</p>
+<p>但除此以外，还有第二个不那么直接的应用。我们可以在字符串 <span class="arithmatex">\(t\)</span> 是 <strong>某些通过一些规则构造的巨型字符串</strong> 时，使用该自动机加速计算。Gray 字符串，或者一个由一些短的输入串的递归组合所构造的字符串都是这种例子。</p>
+<p>出于完整性考虑，我们来解决这样一个问题：给定一个数 <span class="arithmatex">\(k \le 10^5\)</span> ，以及一个长度 <span class="arithmatex">\(\le 10^5\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，我们需要计算 <span class="arithmatex">\(s\)</span> 在第 <span class="arithmatex">\(k\)</span> 个 Gray 字符串中的出现次数。回想起 Gray 字符串以下述方式定义：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+g_1 &amp;= \mathtt{a}\\
+g_2 &amp;= \mathtt{aba}\\
+g_3 &amp;= \mathtt{abacaba}\\
+g_4 &amp;= \mathtt{abacabadabacaba}
+\end{aligned}
+\]</div>
+<p>由于其天文数字般的长度，在这种情况下即使构造字符串 <span class="arithmatex">\(t\)</span> 都是不可能的：第 <span class="arithmatex">\(k\)</span> 个 Gray 字符串有 <span class="arithmatex">\(2^k - 1\)</span> 个字符。然而我们可以在仅仅知道开头若干前缀函数值的情况下，有效计算该字符串末尾的前缀函数值。</p>
+<p>除了自动机之外，我们同时需要计算值 <span class="arithmatex">\(G[i][j]\)</span> ：在从状态 <span class="arithmatex">\(j\)</span> 开始处理 <span class="arithmatex">\(g_i\)</span> 后的自动机的状态，以及值 <span class="arithmatex">\(K[i][j]\)</span> ：当从状态 <span class="arithmatex">\(j\)</span> 开始处理 <span class="arithmatex">\(g_i\)</span> 后， <span class="arithmatex">\(s\)</span> 在 <span class="arithmatex">\(g_i\)</span> 中的出现次数。实际上 <span class="arithmatex">\(K[i][j]\)</span> 为在执行操作时前缀函数取值为 <span class="arithmatex">\(|s|\)</span> 的次数。易得问题的答案为 <span class="arithmatex">\(K[k][0]\)</span> 。</p>
+<p>我们该如何计算这些值呢？首先根据定义，初始条件为 <span class="arithmatex">\(G[0][j] = j\)</span> 以及 <span class="arithmatex">\(K[0][j] = 0\)</span> 。之后所有值可以通过先前的值以及使用自动机计算得到。为了对某个 <span class="arithmatex">\(i\)</span> 计算相应值，回想起字符串 <span class="arithmatex">\(g_i\)</span> 由 <span class="arithmatex">\(g_{i - 1}\)</span> ，字母表中第 <span class="arithmatex">\(i\)</span> 个字符，以及 <span class="arithmatex">\(g_{i - 1}\)</span> 三者拼接而成。因此自动机会途径下列状态：</p>
+<div class="arithmatex">\[
+\begin{gathered}
+\text{mid} = \text{aut}[G[i - 1][j]][i] \\
+G[i][j] = G[i - 1][\text{mid}]
+\end{gathered}
+\]</div>
+<p><span class="arithmatex">\(K[i][j]\)</span> 的值同样可被简单计算。</p>
+<div class="arithmatex">\[
+K[i][j] = K[i - 1][j] + [\text{mid} == |s|] + K[i - 1][\text{mid}]
+\]</div>
+<p>其中 <span class="arithmatex">\([\cdot]\)</span> 当其中表达式取值为真时值为 <span class="arithmatex">\(1\)</span> ，否则为 <span class="arithmatex">\(0\)</span> 。综上，我们已经可以解决关于 Gray 字符串的问题，以及一大类与之类似的问题。举例来说，应用同样的方法可以解决下列问题：给定一个字符串 <span class="arithmatex">\(s\)</span> 以及一些模式 <span class="arithmatex">\(t_i\)</span> ，其中每个模式以下列方式给出：该模式由普通字符组成，当中可能以 <span class="arithmatex">\(t_{k}^{\text{cnt}}\)</span> 的形式递归插入先前的字符串，也即在该位置我们必须插入字符串 <span class="arithmatex">\(t_k\)</span>  <span class="arithmatex">\(\text{cnt}\)</span> 次。以下是这些模式的一个例子：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+t_1 &amp;= \mathtt{abdeca} \\
+t_2 &amp;= \mathtt{abc} + t_1^{30} + \mathtt{abd} \\
+t_3 &amp;= t_2^{50} + t_1^{100} \\
+t_4 &amp;= t_2^{10} + t_3^{100}
+\end{aligned}
+\]</div>
+<p>递归代入会使字符串长度爆炸式增长，他们的长度甚至可以达到 <span class="arithmatex">\(100^{100}\)</span> 的数量级。而我们必须找到字符串 <span class="arithmatex">\(s\)</span> 在每个字符串中的出现次数。</p>
+<p>该问题同样可通过构造前缀函数的自动机解决。同之前一样，我们利用先前计算过的结果对每个模式计算其转移然后相应统计答案即可。</p>
+<h2 id="_13">练习题目</h2>
+<ul>
+<li><a href="http://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=396">UVA 455 "Periodic Strings"</a> </li>
+<li><a href="http://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=1963">UVA 11022 "String Factoring"</a> </li>
+<li><a href="http://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=2447">UVA 11452 "Dancing the Cheeky-Cheeky"</a> </li>
+<li><a href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=4282">UVA 12604 - Caesar Cipher</a> </li>
+<li><a href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=3911">UVA 12467 - Secret Word</a> </li>
+<li><a href="https://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=1960">UVA 11019 - Matrix Matcher</a> </li>
+<li><a href="http://www.spoj.com/problems/NAJPF/">SPOJ - Pattern Find</a> </li>
+<li><a href="http://codeforces.com/contest/808/problem/G">Codeforces - Anthem of Berland</a> </li>
+<li><a href="http://codeforces.com/problemset/problem/471/D">Codeforces - MUH and Cube Walls</a> </li>
+</ul>
+<hr>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/prefix_function">Префикс-функция. Алгоритм Кнута-Морриса-Пратта</a> 与其英文翻译版 <a href="https://cp-algorithms.com/string/prefix-function.html">Prefix function. Knuth–Morris–Pratt algorithm</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+<h5>本页面贡献者</h5>
+<ul>
+<li>Ir1d</li>
+
+<li>LeoJacob</li>
+
+<li>Xeonacid</li>
+
+<li>greyqz</li>
+
+<li>StudyingFather</li>
+
+<li>TrisolarisHD</li>
+
+</ul>
+
+
+</footer>
+</div>
+
+</body>
+</html>

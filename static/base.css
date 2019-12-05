@@ -79,37 +79,44 @@
        url(https://cdn.jsdelivr.net/gh/google/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
 }
 
+
 .material-icons {
   font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-  /* Support for IE. */
-  font-feature-settings: 'liga';
+font-weight: normal;
+font-style: normal;
+text-transform: none;
+letter-spacing: normal;
+word-wrap: normal;
+white-space: nowrap;
+direction: ltr;
+-webkit-font-smoothing: antialiased;
+/* Support for Safari and Chrome. */
+text-rendering: optimizeLegibility;
+/* Support for Firefox. */
+-moz-osx-font-smoothing: grayscale;
+/* Support for IE. */
+font-feature-settings: 'liga';
+
 }
 
 html, body {
     margin: 0;
     padding: 0;
-    background: whitesmoke;
 }
 
-.navbar {
+body {
+    background: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    min-height: 100vh;
+}
+
+header {
     top: 0;
     margin: 0;
+    padding: 0;
     background: white;
     width: 100%;
     box-shadow: 0 0.1em 0.2em gray, 0 0.2em 0.4em lightgray;
@@ -134,28 +141,112 @@ main {
     max-width: 50em;
     padding: 1em 2em;
     box-shadow: 0.5em 0.5em 1em lightgray;
-    min-height: calc(100vh - 20em);
+    width: calc(100% - 4em);
+    flex: 1 0;
 }
 
-@media screen and (min-width: 86em) {
-    .contents {
-        margin: 0 0 0 -16rem;
-        position: fixed;
-        font-size: 70%;
-        text-align: right;
-        width: 12rem;
-        padding: 0 1rem;
-    }
-
-    .contents ul {
-        list-style: none;
-    }
+.footer {
+    background: black;
+    box-shadow: 0em -0.5em 0.5em black;
+    flex: 0 0;
 }
 
 footer {
     margin: 0 auto;
     max-width: 50em;
     padding: 0.5em 0;
+    color: white;
+}
+
+footer a:link {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.tag {
+    color: darkslategray;
+    background: whitesmoke;
+    padding: 0.2em 0.6em;
+    margin: 0 0.5em 0 0;
+}
+
+.tag:hover {
+    background: lightgray;
+}
+
+a.tag, a.canonical  {
+    text-decoration: none;
+}
+
+
+@media screen and (min-width: 86em) {
+    aside.left {
+        margin: 0 0 0 -16rem;
+        position: fixed;
+        width: 12rem;
+        padding: 0 1rem;
+        text-align: right;
+    }
+
+    aside.left ul {
+        list-style: none;
+    }
+
+    aside.right {
+        /* float: right; */
+        margin: 0 0 0 52rem;
+        position: fixed;
+        width: 12rem;
+        padding: 0 1rem;
+        text-align: left;
+    }
+
+    aside .tag {
+        margin: 0;
+        padding: 0;
+        color: inherit;
+        background: inherit;
+    }
+
+    aside .tag::before {
+        content: "label ";
+    }
+
+    aside .canonical::before {
+        content: "open_in_new ";
+    }
+
+    aside .canonical {
+        /* padding: 0.2em 0.6em; */
+    }
+
+    aside .tag::before, aside .canonical::before {
+        font-family: 'Material Icons';
+font-weight: normal;
+font-style: normal;
+text-transform: none;
+letter-spacing: normal;
+word-wrap: normal;
+white-space: nowrap;
+direction: ltr;
+-webkit-font-smoothing: antialiased;
+/* Support for Safari and Chrome. */
+text-rendering: optimizeLegibility;
+/* Support for Firefox. */
+-moz-osx-font-smoothing: grayscale;
+/* Support for IE. */
+font-feature-settings: 'liga';
+
+    }
+
+    aside .tag:hover {
+        background: inherit;
+    }
+
+    aside .tag, aside .canonical {
+        display: block;
+    }
 }
 
 article img {
@@ -164,4 +255,8 @@ article img {
 
 article h1 a:link {
     float: right;
+}
+
+article a.new {
+    color: firebrick;
 }

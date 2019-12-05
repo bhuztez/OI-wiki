@@ -1,0 +1,245 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Z-function
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Z-function
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/z-function.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/z-function.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">样例</a></li>
+<li><a href="#_2">朴素算法</a></li>
+<li><a href="#z">计算 Z 函数的高效算法</a></li>
+<li><a href="#_3">实现</a></li>
+<li><a href="#_5">算法的渐进行为</a></li>
+<li><a href="#_6">应用</a></li>
+<li><a href="#_10">练习题目</a></li>
+</ul>
+</aside>
+
+
+<p>假设我们有一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> 。该字符串的 <strong>Z 函数</strong> 为一个长度为 <span class="arithmatex">\(n\)</span> 的数组，其中第 <span class="arithmatex">\(i\)</span> 个元素为满足从位置 <span class="arithmatex">\(i\)</span> 开始且为 <span class="arithmatex">\(s\)</span> 前缀的字符串的最大长度。</p>
+<p>换句话说， <span class="arithmatex">\(z[i]\)</span> 是 <span class="arithmatex">\(s\)</span> 和从 <span class="arithmatex">\(i\)</span> 开始的 <span class="arithmatex">\(s\)</span> 的后缀的最大公共前缀长度。</p>
+<p><strong>注意</strong> ：为了避免歧义，在这篇文章中下标从 <span class="arithmatex">\(0\)</span> 开始，即 <span class="arithmatex">\(s\)</span> 的第一个字符下标为 <span class="arithmatex">\(0\)</span> ，最后一个字符下标为 <span class="arithmatex">\(n - 1\)</span> 。</p>
+<p>Z 函数的第一个元素， <span class="arithmatex">\(z[0]\)</span> ，通常不是良定义的。在这篇文章中我们假定它是 <span class="arithmatex">\(0\)</span> （虽然在算法实现中这没有任何影响）。</p>
+<p>国外一般将计算该数组的算法称为 <strong>Z Algorithm</strong> ，而国内则称其为 <strong>扩展 KMP</strong> 。</p>
+<p>这篇文章包含在 <span class="arithmatex">\(O(n)\)</span> 时间复杂度内计算 Z 函数的算法以及其各种应用。</p>
+<h2 id="_1">样例</h2>
+<p>下面若干样例展示了对于不同字符串的 Z 函数：</p>
+<ul>
+<li><span class="arithmatex">\(Z(\mathtt{aaaaa}) = [0, 4, 3, 2, 1]\)</span></li>
+<li><span class="arithmatex">\(Z(\mathtt{aaabaab}) = [0, 2, 1, 0, 2, 1, 0]\)</span></li>
+<li><span class="arithmatex">\(Z(\mathtt{abacaba}) = [0, 0, 1, 0, 3, 0, 1]\)</span></li>
+</ul>
+<h2 id="_2">朴素算法</h2>
+<p>Z 函数的形式化定义可被表述为下列基础的 <span class="arithmatex">\(O(n^2)\)</span> 实现。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">z_function_trivial</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">s</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">z</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">++</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="k">return</span> <span class="n">z</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>我们做的仅仅为循环每个位置 <span class="arithmatex">\(i\)</span> ，并通过下述做法更新每个 <span class="arithmatex">\(z[i]\)</span> ：从 <span class="arithmatex">\(z[i] = 0\)</span> 开始，只要我们没有失配（并且没有到达末尾）就将其加 <span class="arithmatex">\(1\)</span> 。</p>
+<p>诚然，这并不是一个高效的实现。我们接下来将展示一个高效实现的构造过程。</p>
+<h2 id="z">计算 Z 函数的高效算法</h2>
+<p>为了得到一个高效算法，我们将以 <span class="arithmatex">\(i = 1\)</span> 到 <span class="arithmatex">\(n - 1\)</span> 的顺序计算 <span class="arithmatex">\(z[i]\)</span> ，但在计算一个新值的同时，我们将尝试尽最大努力使用之前已经计算好的值。</p>
+<p>为了简便起见，定义 <strong>匹配段</strong> 为同 <span class="arithmatex">\(s\)</span> 一个前缀相同的那些子串。举例来说，所求 Z 函数的第 <span class="arithmatex">\(i\)</span> 个元素 <span class="arithmatex">\(z[i]\)</span> 为从位置 <span class="arithmatex">\(i\)</span> 开始的匹配段的长度（其终止位置位于 <span class="arithmatex">\(i + z[i] - 1\)</span> ）。</p>
+<p>为了达成目标，我们将始终保持 <strong> <span class="arithmatex">\([l;r]\)</span> 为最靠右的匹配段</strong> 。也就是说，在所有已探测到的匹配段中，我们将保持结尾最靠右的那一个。另一方面，下标 <span class="arithmatex">\(r\)</span> 可被认为是字符串 <span class="arithmatex">\(s\)</span> 已被算法扫描的边界；任何超过该点的字符都是未知的。</p>
+<p>假设当前下标为 <span class="arithmatex">\(i\)</span> （即我们要计算的下一个 Z 函数值的下标），则有两种情况：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(i &gt; r\)</span> -- 当前位置在我们已处理位置 <strong>之外</strong> 。</p>
+<p>我们接下来使用 <strong>朴素算法</strong> （即一个一个的比较字符）来计算 <span class="arithmatex">\(z[i]\)</span> 。注意如果最后 <span class="arithmatex">\(z[i] &gt; 0\)</span> ，我们需要更新最靠右的匹配段的下标，因为新的 <span class="arithmatex">\(r = i + z[i] - 1\)</span> 一定比之前的 <span class="arithmatex">\(r\)</span> 优。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(i \le r\)</span> -- 当前位置位于当前匹配段 <span class="arithmatex">\([l;r]\)</span> 之内。</p>
+<p>那么我们可以用已计算过的 Z 函数值来“初始化” <span class="arithmatex">\(z[i]\)</span> 至某值（至少比“从零开始”要好），甚至可能是某些较大的值。</p>
+<p>为了做到这一点，我们注意到子串 <span class="arithmatex">\(s[l\dots r]\)</span> 和 <span class="arithmatex">\(s[0 \dots r - l]\)</span> 匹配。这意味着作为 <span class="arithmatex">\(z[i]\)</span> 的一个初始近似，我们可以直接使用对应于段 <span class="arithmatex">\(s[0 \dots r - l]\)</span> 的已计算过的 Z 函数值，也即 <span class="arithmatex">\(z[i - l]\)</span> 。</p>
+<p>然而， <span class="arithmatex">\(z[i - l]\)</span> 可能太大了：将其应用到位置 <span class="arithmatex">\(i\)</span> 结果可能超过下标 <span class="arithmatex">\(r\)</span> 。这种做法并不合法，原因在于我们对 <span class="arithmatex">\(r\)</span> 右侧的字符一无所知：他们可能并不满足要求。</p>
+<p>此处给出一个相似场景的 <strong>例子</strong> ：</p>
+<div class="arithmatex">\[
+s=\mathtt{aaaabaa}
+\]</div>
+<p>当我们尝试计算末尾位置（ <span class="arithmatex">\(i = 6\)</span> ）的值时，当前匹配的段为 <span class="arithmatex">\([5;6]\)</span> 。位置 <span class="arithmatex">\(6\)</span> 会匹配位置 <span class="arithmatex">\(6 - 5 = 1\)</span> ，其 Z 函数值为 <span class="arithmatex">\(z[1] = 3\)</span> 。显然，我们不能将 <span class="arithmatex">\(z[6]\)</span> 初始化为 <span class="arithmatex">\(3\)</span> ，因为这完全不对。我们可以初始化的最大值为 <span class="arithmatex">\(1\)</span> -- 因为这是使我们不超过段 <span class="arithmatex">\([l;r]\)</span> 的边界 <span class="arithmatex">\(r\)</span> 的最大可能取值。</p>
+<p>因此，我们可以放心的将下列值作为 <span class="arithmatex">\(z[i]\)</span> 的一个初始近似：</p>
+<div class="arithmatex">\[
+z_0[i] = \min(r - i + 1, z[i - l])
+\]</div>
+<p>当将 <span class="arithmatex">\(z[i]\)</span> 初始化为 <span class="arithmatex">\(z_0[i]\)</span> 后，我们尝试使用 <strong>朴素算法</strong> 增加 <span class="arithmatex">\(z[i]\)</span> 的值 -- 因为宏观来讲，对于边界 <span class="arithmatex">\(r\)</span> 之后的事情，我们无法得知段是否会继续匹配还是失配。</p>
+</li>
+</ul>
+<p>综上所述，整个算法被划分成两种情况，他们只在设置 <span class="arithmatex">\(z[i]\)</span> 的 <strong>初始值</strong> 时有所不同：在第一种情况下，其被认为为 <span class="arithmatex">\(0\)</span> ，在第二种情况下它由先前已计算过的值确定（使用前述公式）。之后，该算法的两个分支都被规约为实现 <strong>朴素算法</strong> 。当我们设置完初始值后，该算法即开始执行。</p>
+<p>该算法看起来非常简单。尽管在每轮迭代都会运行朴素算法，但我们已经取得了巨大进步：获得了一个时间复杂度为线性的算法。之后我们会证明这一点。</p>
+<h2 id="_3">实现</h2>
+<p>实现相对来说十分简明：</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">z_function</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">s</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">z</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">l</span><span class="p">]);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">++</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="n">l</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">z</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h3 id="_4">对该实现的注释</h3>
+<p>整个解法被作为一个函数给出。该函数返回一个长度为 <span class="arithmatex">\(n\)</span> 的数组 -- <span class="arithmatex">\(s\)</span> 的 Z 函数。</p>
+<p>数组 <span class="arithmatex">\(z\)</span> 被初始化为全 <span class="arithmatex">\(0\)</span> 。当前最右的匹配段被假定为 <span class="arithmatex">\([0;0]\)</span> （一个故意为之的不包含任何 <span class="arithmatex">\(i\)</span> 的小段）。</p>
+<p>在循环内，对于 <span class="arithmatex">\(i=1\dots n - 1\)</span> ，我们首先确定 <span class="arithmatex">\(z[i]\)</span> 的初始值 -- 其要么保持为 <span class="arithmatex">\(0\)</span> 或者使用前述公式计算。</p>
+<p>之后，朴素算法尝试尽可能多的增加 <span class="arithmatex">\(z[i]\)</span> 值。</p>
+<p>最后，如果必要（即如果 <span class="arithmatex">\(i + z[i] - 1 &gt; r\)</span> ），我们更新最右匹配段 <span class="arithmatex">\([l;r]\)</span> 。</p>
+<h2 id="_5">算法的渐进行为</h2>
+<p>我们将证明上述算法的运行时间关于字符串长度呈线性 -- 即其时间复杂度为 <span class="arithmatex">\(O(n)\)</span> 。</p>
+<p>该证明十分简单。</p>
+<p>我们只关心内层 <code>while</code> 循环，因为其余部分在一次循环中只是一堆常数次操作，其时间复杂度总和为 <span class="arithmatex">\(O(n)\)</span> 。</p>
+<p>我们将证明 <code>while</code> 的 <strong>每次迭代</strong> 都将增加匹配段的右边界 <span class="arithmatex">\(r\)</span> 。</p>
+<p>为了做到这一点，我们将考虑算法的所有分支：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(i &gt; r\)</span></p>
+<p>在这种情况下，要么 <code>while</code> 循环不进行任何迭代（如果 <span class="arithmatex">\(s[0] \neq s[i]\)</span> ），要么其将从位置 <span class="arithmatex">\(i\)</span> 开始进行若干次迭代，其中每次迭代将向右移动一个字符。每次迭代后，右边界 <span class="arithmatex">\(r\)</span> 必定被更新。</p>
+<p>因此我们证明了，当 <span class="arithmatex">\(i &gt; r\)</span> 时， <code>while</code> 循环的每轮迭代都会使新的 <span class="arithmatex">\(r\)</span> 增加 <span class="arithmatex">\(1\)</span> 。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(i \le r\)</span></p>
+<p>在这种情况下，我们将 <span class="arithmatex">\(z[i]\)</span> 初始化为由前述公式给出的某个具体 <span class="arithmatex">\(z_0\)</span> 。将 <span class="arithmatex">\(z_0\)</span> 和 <span class="arithmatex">\(r - i + 1\)</span> 比较，可能有三种情况：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(z_0 &lt; r - i + 1\)</span></p>
+<p>我们证明在这种情况下 <code>while</code> 循环不会进行任何迭代。</p>
+<p>这是十分容易证明的，比如通过反证法：如果 <code>while</code> 循环进行了至少一次迭代，这意味着初始近似 <span class="arithmatex">\(z[i] = z_0\)</span> 是不准确的（小于匹配的实际长度）。但是由于 <span class="arithmatex">\(s[l\dots r]\)</span> 和 <span class="arithmatex">\(s[0\dots r - l]\)</span> 是一样的，这推出 <span class="arithmatex">\(z[i - l]\)</span> 的值是错误的（比其该有的值小）。</p>
+<p>所以，因为 <span class="arithmatex">\(z[i - l]\)</span> 是正确的且其值小于 <span class="arithmatex">\(r - i + 1\)</span> ，故该值同所求的 <span class="arithmatex">\(z[i]\)</span> 是相同的。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(z_0 = r - i + 1\)</span></p>
+<p>在这种情况下， <code>while</code> 循环可能会进行若干次迭代。因为我们从 <span class="arithmatex">\(s[r + 1]\)</span> 开始比较，而其位置已经超过了区间 <span class="arithmatex">\([l;r]\)</span> ，故每次迭代都会使 <span class="arithmatex">\(r\)</span> 增加。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(z_0 &gt; r - i + 1\)</span></p>
+<p>根据 <span class="arithmatex">\(z_0\)</span> 的定义，这种情况是不可能的。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>综上，我们已经证明了内层循环的每次迭代都会使 <span class="arithmatex">\(r\)</span> 向右移动。由于 <span class="arithmatex">\(r\)</span> 不可能超过 <span class="arithmatex">\(n - 1\)</span> ，这意味着内层循环至多进行 <span class="arithmatex">\(n - 1\)</span> 轮迭代。</p>
+<p>因为该算法的剩余部分显然时间复杂度为 <span class="arithmatex">\(O(n)\)</span> ，所以我们已经证明了计算 Z 函数的整个算法时间复杂度为线性。</p>
+<h2 id="_6">应用</h2>
+<p>我们现在来考虑在若干具体情况下 Z 函数的应用。</p>
+<p>这些应用在很大程度上同 <a href="./kmp.md">前缀函数</a> 的应用类似。</p>
+<h3 id="_7">查找子串</h3>
+<p>为了避免混淆，我们将 <span class="arithmatex">\(t\)</span> 称作 <strong>文本</strong> ，将 <span class="arithmatex">\(p\)</span> 称作 <strong>模式</strong> 。所给出的问题是：寻找在文本 <span class="arithmatex">\(t\)</span> 中模式 <span class="arithmatex">\(p\)</span> 的所有出现（occurrence）。</p>
+<p>为了解决该问题，我们构造一个新的字符串 <span class="arithmatex">\(s = p + \diamond + t\)</span> ，也即我们将 <span class="arithmatex">\(p\)</span> 和 <span class="arithmatex">\(t\)</span> 连接在一起，但是在中间放置了一个分割字符 <span class="arithmatex">\(\diamond\)</span> （我们将如此选取 <span class="arithmatex">\(\diamond\)</span> 使得其必定不出现在 <span class="arithmatex">\(p\)</span> 和 <span class="arithmatex">\(t\)</span> 中）。</p>
+<p>首先计算 <span class="arithmatex">\(s\)</span> 的 Z 函数。接下来，对于在区间 <span class="arithmatex">\([0; \operatorname{length}(t) - 1]\)</span> 中的任意 <span class="arithmatex">\(i\)</span> ，我们考虑其对应的值 <span class="arithmatex">\(k = z[i + \operatorname{length}(p) + 1]\)</span> 。如果 <span class="arithmatex">\(k\)</span> 等于 <span class="arithmatex">\(\operatorname{length}(p)\)</span> ，那么我们知道有一个 <span class="arithmatex">\(p\)</span> 的出现位于 <span class="arithmatex">\(t\)</span> 的第 <span class="arithmatex">\(i\)</span> 个位置，否则没有 <span class="arithmatex">\(p\)</span> 的出现位于 <span class="arithmatex">\(t\)</span> 的第 <span class="arithmatex">\(i\)</span> 个位置。</p>
+<p>其时间复杂度（同时也是其空间复杂度）为 <span class="arithmatex">\(O(\operatorname{length}(t) + \operatorname{length}(p))\)</span> 。</p>
+<h3 id="_8">一个字符串中本质不同子串的数目</h3>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，计算 <span class="arithmatex">\(s\)</span> 的本质不同子串的数目。</p>
+<p>我们将迭代的解决该问题。也即：在知道了当前的本质不同子串的数目的情况下，在 <span class="arithmatex">\(s\)</span> 末尾添加一个字符后重新计算该数目。</p>
+<p>令 <span class="arithmatex">\(k\)</span> 为当前 <span class="arithmatex">\(s\)</span> 的本质不同子串数量。我们添加一个新的字符 <span class="arithmatex">\(c\)</span> 至 <span class="arithmatex">\(s\)</span> 。显然，会有一些新的子串以新的字符 <span class="arithmatex">\(c\)</span> 结尾（换句话说，那些以该字符结尾且我们之前未曾遇到的子串）。</p>
+<p>构造字符串 <span class="arithmatex">\(t = s + c\)</span> 并将其反转（以相反顺序书写其字符）。我们现在的任务是计算有多少 <span class="arithmatex">\(t\)</span> 的前缀未在 <span class="arithmatex">\(t\)</span> 的其余任何地方出现。让我们计算 <span class="arithmatex">\(t\)</span> 的 Z 函数并找到其最大值 <span class="arithmatex">\(z_{\max}\)</span> 。显然， <span class="arithmatex">\(t\)</span> 的长度为 <span class="arithmatex">\(z_{\max}\)</span> 的前缀出现在 <span class="arithmatex">\(t\)</span> 中间的某个位置。自然的，更短的前缀也出现了。</p>
+<p>所以，我们已经找到了当将字符 <span class="arithmatex">\(c\)</span> 添加至 <span class="arithmatex">\(s\)</span> 后新出现的子串数目为 <span class="arithmatex">\(\operatorname{length}(t) - z_{\max}\)</span> 。</p>
+<p>作为其结果，该解法对于一个长度为 <span class="arithmatex">\(n\)</span> 的字符串的时间复杂度为 <span class="arithmatex">\(O(n^2)\)</span> 。</p>
+<p>值得注意的是，我们可以用同样的方法在 <span class="arithmatex">\(O(n)\)</span> 时间内，重新计算在头部添加一个字符，或者移除一个字符（从尾或者头）时的本质不同子串数目。</p>
+<h3 id="_9">字符串压缩</h3>
+<p>给定一个长度为 <span class="arithmatex">\(n\)</span> 的字符串 <span class="arithmatex">\(s\)</span> ，找到其最短的“压缩”表示，即：寻找一个最短的字符串 <span class="arithmatex">\(t\)</span> ，使得 <span class="arithmatex">\(s\)</span> 可以被 <span class="arithmatex">\(t\)</span> 的一份或多份拷贝的拼接表示。</p>
+<p>其中一种解法为：计算 <span class="arithmatex">\(s\)</span> 的 Z 函数，从小到大循环所有满足 <span class="arithmatex">\(i\)</span> 整除 <span class="arithmatex">\(n\)</span> 的 <span class="arithmatex">\(i\)</span> 。在找到第一个满足 <span class="arithmatex">\(i + z[i] = n\)</span> 的 <span class="arithmatex">\(i\)</span> 时终止。那么该字符串 <span class="arithmatex">\(s\)</span> 可被压缩为长度 <span class="arithmatex">\(i\)</span> 的字符串。</p>
+<p>该事实的证明同应用 <a href="./kmp.md">前缀函数</a> 的解法证明一样。</p>
+<h2 id="_10">练习题目</h2>
+<ul>
+<li><a href="http://codeforces.com/problemset/problem/126/B">CF126B Password</a></li>
+<li><a href="http://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=396">UVA # 455 Periodic Strings</a></li>
+<li><a href="http://uva.onlinejudge.org/index.php?option=onlinejudge&amp;page=show_problem&amp;problem=1963">UVA # 11022 String Factoring</a></li>
+<li><a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=24&amp;page=show_problem&amp;problem=2470">UVa 11475 - Extend to Palindrome</a></li>
+<li><a href="https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=588&amp;page=show_problem&amp;problem=4450">LA 6439 - Pasti Pas!</a></li>
+<li><a href="https://www.codechef.com/problems/CHSTR">Codechef - Chef and Strings</a></li>
+<li><a href="http://codeforces.com/problemset/problem/432/D">Codeforces - Prefixes and Suffixes</a></li>
+</ul>
+<hr>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/z_function">Z-функция строки и её вычисление</a> 与其英文翻译版 <a href="https://cp-algorithms.com/string/z-function.html">Z-function and its calculation</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong></p>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+<h5>本页面贡献者</h5>
+<ul>
+<li>LeoJacob</li>
+
+<li>TrisolarisHD</li>
+
+</ul>
+
+
+</footer>
+</div>
+
+</body>
+</html>

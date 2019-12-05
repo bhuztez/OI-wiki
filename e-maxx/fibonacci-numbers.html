@@ -1,0 +1,193 @@
+
+<!doctype html>
+<html>
+<head>
+<title>
+Fibonacci Numbers
+ -
+OI Wiki</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/OI-wiki/static/base.css">
+
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/OI-wiki/"><i class="material-icons">school</i> OI Wiki</a>
+</nav>
+</header>
+
+<main>
+
+<article>
+<h1>Fibonacci Numbers
+
+<a href="https://github.com/OI-wiki/OI-wiki/blob/master/wiki/e-maxx/fibonacci-numbers.md"><i class="material-icons">edit</i></a>
+<a href="https://github.com/OI-wiki/OI-wiki/commits/master/wiki/e-maxx/fibonacci-numbers.md"><i class="material-icons">history</i></a></h1>
+
+
+<aside class="right">
+
+
+
+
+<h4>标签</h4>
+
+<a class="tag" href="/OI-wiki/tagged/e-maxx.html">E-Maxx</a>
+
+</aside>
+
+
+<aside class="left">
+<h2>目录</h2>
+<ul>
+<li><a href="#_1">性质</a></li>
+<li><a href="#_2">斐波那契编码</a></li>
+<li><a href="#_3">斐波那契数列通项公式</a></li>
+<li><a href="#_7">模意义下周期性</a></li>
+<li><a href="#_8">习题</a></li>
+</ul>
+</aside>
+
+
+<p>斐波那契数列（The Fibonacci sequence， <a href="http://oeis.org/A000045">OEIS A000045</a> ）的定义如下：</p>
+<div class="arithmatex">\[
+F_0 = 0, F_1 = 1, F_n = F_{n-1} + F_{n-2}
+\]</div>
+<p>该数列的前几项如下：</p>
+<div class="arithmatex">\[
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
+\]</div>
+<h2 id="_1">性质</h2>
+<p>斐波那契数列拥有许多有趣的性质，这里列举出一部分简单的性质：</p>
+<ol>
+<li>卡西尼性质（Cassini's identity）： <span class="arithmatex">\(F_{n-1} F_{n+1} - F_n^2 = (-1)^n\)</span> 。</li>
+<li>附加性质： <span class="arithmatex">\(F_{n+k} = F_k F_{n+1} + F_{k-1} F_n\)</span> 。</li>
+<li>取上一条性质中 <span class="arithmatex">\(k = n\)</span> ，我们得到 <span class="arithmatex">\(F_{2n} = F_n (F_{n+1} + F_{n-1})\)</span> 。</li>
+<li>由上一条性质可以归纳证明， <span class="arithmatex">\(\forall k\in \mathbb{N},F_n|F_{nk}\)</span> 。</li>
+<li>上述性质可逆，即 <span class="arithmatex">\(\forall F_a|F_b,a|b\)</span> 。</li>
+<li>GCD 性质： <span class="arithmatex">\((F_m, F_n) = F_{(m, n)}\)</span> 。</li>
+<li>以斐波那契数列相邻两项作为输入会使欧几里德算法达到最坏复杂度（具体参见 <a href="https://en.wikipedia.org/wiki/Gabriel_Lam%C3%A9">维基 - 拉梅</a> ）。</li>
+</ol>
+<h2 id="_2">斐波那契编码</h2>
+<p>我们可以利用斐波那契数列为正整数编码。根据 <a href="https://zh.wikipedia.org/wiki/%E9%BD%8A%E8%82%AF%E5%A4%9A%E5%A4%AB%E5%AE%9A%E7%90%86">齐肯多夫定理</a> ，任何自然数 <span class="arithmatex">\(n\)</span> 可以被唯一地表示成一些斐波那契数的和：</p>
+<div class="arithmatex">\[
+N = F_{k_1} + F_{k_2} + \ldots + F_{k_r}
+\]</div>
+<p>并且 <span class="arithmatex">\(k_1 \ge k_2 + 2,\ k_2 \ge k_3 + 2,\  \ldots,\  k_r \ge 2\)</span> （即不能使用两个相邻的斐波那契数）</p>
+<p>于是我们可以用 <span class="arithmatex">\(d_0 d_1 d_2 \dots d_s 1\)</span> 的编码表示一个正整数，其中 <span class="arithmatex">\(d_i=1\)</span> 则表示 <span class="arithmatex">\(F_{i+2}\)</span> 被使用。编码末位我们强制给它加一个 1（这样会出现两个相邻的 1），表示这一串编码结束。举几个例子：</p>
+<div class="arithmatex">\[
+\begin{eqnarray}
+1 &amp;=&amp; 1 &amp;=&amp; F_2 &amp;=&amp; (11)_F \\
+2 &amp;=&amp; 2 &amp;=&amp; F_3 &amp;=&amp; (011)_F \\
+6 &amp;=&amp; 5 + 1 &amp;=&amp; F_5 + F_2 &amp;=&amp; (10011)_F \\
+8 &amp;=&amp; 8 &amp;=&amp; F_6 &amp;=&amp; (000011)_F \\
+9 &amp;=&amp; 8 + 1 &amp;=&amp; F_6 + F_2 &amp;=&amp; (100011)_F \\
+19 &amp;=&amp; 13 + 5 + 1 &amp;=&amp; F_7 + F_5 + F_2 &amp;=&amp; (1001011)_F
+\end{eqnarray}
+\]</div>
+<p>给 <span class="arithmatex">\(n\)</span> 编码的过程可以使用贪心算法解决：</p>
+<ol>
+<li>从大到小枚举斐波那契数 <span class="arithmatex">\(F_i\)</span> ，直到 <span class="arithmatex">\(F_i\le n\)</span> 。</li>
+<li>把 <span class="arithmatex">\(n\)</span> 减掉 <span class="arithmatex">\(F_i\)</span> ，在编码的 <span class="arithmatex">\(i-2\)</span> 的位置上放一个 1（编码从左到右以 0 为起点）。</li>
+<li>如果 <span class="arithmatex">\(n\)</span> 为正，回到步骤 1。</li>
+<li>最后在编码末位添加一个 1，表示编码的结束位置。</li>
+</ol>
+<p>解码过程同理，先删掉末位的 1，对于编码为 1 的位置 <span class="arithmatex">\(i\)</span> （编码从左到右以 0 为起点），累加一个 <span class="arithmatex">\(F_{i+2}\)</span> 到答案。最后的答案就是原数字。</p>
+<h2 id="_3">斐波那契数列通项公式</h2>
+<p>第 <span class="arithmatex">\(n\)</span> 个斐波那契数可以在 <span class="arithmatex">\(\Theta (n)\)</span> 的时间内使用递推公式计算。但我们仍有更快速的方法计算。</p>
+<h3 id="_4">解析解</h3>
+<p>解析解即公式解。我们有斐波那契数列的通项公式（Binet's Formula）：</p>
+<div class="arithmatex">\[
+F_n = \frac{\left(\frac{1 + \sqrt{5}}{2}\right)^n - \left(\frac{1 - \sqrt{5}}{2}\right)^n}{\sqrt{5}}
+\]</div>
+<p>这个公式可以很容易地用归纳法证明，当然也可以通过生成函数的概念推导，或者解一个方程得到。</p>
+<p>当然你可能发现，这个公式分子的第二项总是小于 <span class="arithmatex">\(1\)</span> ，并且它以指数级的速度减小。因此我们可以把这个公式写成</p>
+<div class="arithmatex">\[
+F_n = \left[\frac{\left(\frac{1 + \sqrt{5}}{2}\right)^n}{\sqrt{5}}\right]
+\]</div>
+<p>这里的中括号表示取离它最近的整数。</p>
+<p>这两个公式在计算的时侯要求极高的精确度，因此在实践中很少用到。但是请不要忽视！结合模意义下二次剩余和逆元的概念，在 OI 中使用这个公式仍是有用的。</p>
+<h3 id="_5">矩阵形式</h3>
+<p>斐波那契数列的递推可以用矩阵乘法的形式表达：</p>
+<div class="arithmatex">\[
+\begin{bmatrix}F_{n-1} &amp; F_{n} \cr\end{bmatrix} = \begin{bmatrix}F_{n-2} &amp; F_{n-1} \cr\end{bmatrix} \cdot \begin{bmatrix}0 &amp; 1 \cr 1 &amp; 1 \cr\end{bmatrix}
+\]</div>
+<p>设 <span class="arithmatex">\(P = \begin{bmatrix}0 &amp; 1 \cr 1 &amp; 1 \cr\end{bmatrix}\)</span> ，我们得到</p>
+<div class="arithmatex">\[
+\begin{bmatrix}F_n &amp; F_{n+1} \cr\end{bmatrix} = \begin{bmatrix}F_0 &amp; F_1 \cr\end{bmatrix} \cdot P^n
+\]</div>
+<p>于是我们可以用矩阵乘法在 <span class="arithmatex">\(\Theta(\log n)\)</span> 的时间内计算斐波那契数列。此外，前一节讲述的公式也可通过矩阵对角化的技巧来得到。</p>
+<h3 id="_6">快速倍增法</h3>
+<p>使用上面的方法我们可以得到以下等式：</p>
+<div class="arithmatex">\[
+\begin{array}{rll}
+F_{2k} &amp;= F_k \left( 2F_{k+1} - F_{k} \right)\\
+F_{2k+1} &amp;= F_{k+1}^2 + F_{k}^2
+\end{array}
+\]</div>
+<p>于是可以通过这样的方法快速计算两个相邻的斐波那契数（常数比矩乘小）。代码如下，返回值是一个二元组 <span class="arithmatex">\((F_n,F_{n+1})\)</span> 。</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
+  <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">-</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span> <span class="o">*</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">*</span> <span class="n">p</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span><span class="p">};</span>
+  <span class="k">else</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="_7">模意义下周期性</h2>
+<p>考虑模 <span class="arithmatex">\(p\)</span> 意义下的斐波那契数列，可以容易地使用抽屉原理证明，该数列是有周期性的。考虑模意义下前 <span class="arithmatex">\(p^2+1\)</span> 个斐波那契数对（两个相邻数配对）：</p>
+<div class="arithmatex">\[
+(F_1,\ F_2),\ (F_2,\ F_3),\ \ldots,\ (F_{p^2 + 1},\ F_{p^2 + 2})
+\]</div>
+<p><span class="arithmatex">\(p\)</span> 的剩余系大小为 <span class="arithmatex">\(p\)</span> ，意味着在前 <span class="arithmatex">\(p^2+1\)</span> 个数对中必有两个相同的数对，于是这两个数对可以往后生成相同的斐波那契数列，那么他们就是周期性的。</p>
+<p>事实上，我们有一个远比它要强的结论。模 <span class="arithmatex">\(n\)</span> 意义下斐波那契数列的周期被称为 <a href="https://en.wikipedia.org/wiki/Pisano_period">皮萨诺周期</a> （ <a href="http://oeis.org/A001175">OEIS A001175</a> ），该数可以证明总是不超过 <span class="arithmatex">\(6n\)</span> ，且只有在满足 <span class="arithmatex">\(n=2\times 5^k\)</span> 的形式时才取到等号。</p>
+<h2 id="_8">习题</h2>
+<ul>
+<li><a href="http://www.spoj.com/problems/MAIN74/">SPOJ - Euclid Algorithm Revisited</a> </li>
+<li><a href="http://www.spoj.com/problems/FIBOSUM/">SPOJ - Fibonacci Sum</a> </li>
+<li><a href="https://www.hackerrank.com/contests/codesprint5/challenges/is-fibo/problem">HackerRank - Is Fibo</a> </li>
+<li>
+<p><a href="https://www.hackerrank.com/contests/projecteuler/challenges/euler002/problem">Project Euler - Even Fibonacci numbers</a> </p>
+<p><strong>本页面主要译自博文 <a href="http://e-maxx.ru/algo/fibonacci_numbers">Числа Фибоначчи</a> 与其英文翻译版 <a href="https://cp-algorithms.com/algebra/fibonacci-numbers.html">Fibonacci Numbers</a> 。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。</strong> </p>
+</li>
+</ul>
+
+</article>
+
+
+</main>
+
+<div class="footer">
+<footer>
+<p>&copy; 2016-2019 OI Wiki Team</p>
+
+<p>本页面的全部内容在 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh">CC BY-SA 4.0</a> 和 <a href="https://github.com/zTrix/sata-license">SATA</a> 协议之条款下提供，附加条款亦可能应用
+</p>
+
+
+
+
+
+</footer>
+</div>
+
+</body>
+</html>
